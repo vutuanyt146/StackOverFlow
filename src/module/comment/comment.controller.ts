@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentDto } from './dto/comment.dto';
 
@@ -15,6 +15,7 @@ export class CommentController {
   async get(@Query() query) {
     const postId = query['postId'];
     const commentId = query['commentId'];
+
     return await this.commentService.get(postId, commentId);
   }
 }

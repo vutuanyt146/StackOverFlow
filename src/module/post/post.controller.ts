@@ -22,6 +22,7 @@ export class PostController {
   @Get()
   async findAll(@Query() query) {
     const tagName = query['tagName'];
+
     return await this.postService.findAll(tagName);
   }
 
