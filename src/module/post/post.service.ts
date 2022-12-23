@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Post } from 'src/module/post/post.entity';
-import { Tag } from '../tag/tag.entity';
+import { Post } from 'src/model/post.entity';
+import { Tag } from '../../model/tag.entity';
 
 @Injectable()
 export class PostService {

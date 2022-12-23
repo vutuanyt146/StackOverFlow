@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Comment } from './comment.entity';
+import { Comment } from '../../model/comment.entity';
 
 @Injectable()
 export class CommentService {

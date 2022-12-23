@@ -7,9 +7,9 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Post } from 'src/module/post/post.entity';
-import { Comment } from 'src/module/comment/comment.entity';
-import { Vote } from '../vote/vote.entity';
+import { Post } from 'src/model/post.entity';
+import { Comment } from 'src/model/comment.entity';
+import { Vote } from './vote.entity';
 
 const ROLE = DataType.ENUM('ADMIN', 'DEVELOPER', 'CUSTOMER', 'MAINTAINER');
 

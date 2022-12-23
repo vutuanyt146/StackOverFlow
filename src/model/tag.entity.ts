@@ -6,7 +6,7 @@ import {
   AutoIncrement,
   HasMany,
 } from 'sequelize-typescript';
-import { Post } from 'src/module/post/post.entity';
+import { Post } from 'src/model/post.entity';
 
 @Table
 export class Tag extends Model {

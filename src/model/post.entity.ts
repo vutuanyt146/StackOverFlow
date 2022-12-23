@@ -8,9 +8,9 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { Tag } from 'src/module/tag/tag.entity';
-import { User } from 'src/module/user/user.entity';
-import { Comment } from '../comment/comment.entity';
+import { Tag } from 'src/model/tag.entity';
+import { User } from 'src/model/user.entity';
+import { Comment } from './comment.entity';
 
 @Table
 export class Post extends Model {

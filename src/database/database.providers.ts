@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Post } from 'src/module/post/post.entity';
-import { Tag } from 'src/module/tag/tag.entity';
-import { User } from 'src/module/user/user.entity';
-import { Vote } from 'src/module/vote/vote.entity';
-import { Comment } from 'src/module/comment/comment.entity';
+import { Post } from 'src/model/post.entity';
+import { Tag } from 'src/model/tag.entity';
+import { User } from 'src/model/user.entity';
+import { Vote } from 'src/model/vote.entity';
+import { Comment } from 'src/model/comment.entity';
 
 const models = [User, Post, Tag, Vote, Comment];
 

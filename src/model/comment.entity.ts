@@ -1,24 +1,27 @@
 import {
-  Table,
+  AutoIncrement,
+  BelongsTo,
   Column,
+  ForeignKey,
   Model,
   PrimaryKey,
-  AutoIncrement,
-  ForeignKey,
-  BelongsTo,
-  DataType,
+  Table,
 } from 'sequelize-typescript';
-import { User } from 'src/module/user/user.entity';
-import { Post } from '../post/post.entity';
-
-const VOTE_TYPE = DataType.ENUM('UP VOTE', 'DOWN VOTE');
+import { Post } from 'src/model/post.entity';
+import { User } from 'src/model/user.entity';
 
 @Table
-export class Vote extends Model {
+export class Comment extends Model {
   @AutoIncrement
   @PrimaryKey
   @Column
   id: number;
+
+  @Column
+  content: string;
+
+  @Column
+  comment_id: number;
 
   @ForeignKey(() => User)
   @Column
@@ -27,11 +30,6 @@ export class Vote extends Model {
   @ForeignKey(() => Post)
   @Column
   post_id: number;
-
-  @Column({
-    type: VOTE_TYPE,
-  })
-  vote_type: string;
 
   @BelongsTo(() => User)
   user: User;

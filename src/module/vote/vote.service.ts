@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Vote } from './vote.entity';
+import { Vote } from '../../model/vote.entity';
 
 @Injectable()
 export class VoteService {
