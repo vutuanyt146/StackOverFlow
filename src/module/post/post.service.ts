@@ -1,64 +1,77 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Post } from 'src/model/post.entity';
 import { Tag } from '../../model/tag.entity';
+import { PostDto } from './dto/post.dto';
 
 @Injectable()
 export class PostService {
-  async create(postDto): Promise<string> {
-    let tag_id;
+  async create(postDto: PostDto) {
+    let tagId;
     const isExistTag = await Tag.findOne({
       where: {
-        name: postDto.tag_name,
+        name: postDto.tagName,
       },
     });
 
     if (!isExistTag) {
       const newTag = await Tag.create({
-        name: postDto.tag_name,
+        name: postDto.tagName,
       });
 
-      tag_id = newTag.id;
+      tagId = newTag.id;
     } else {
-      tag_id = isExistTag.id;
+      tagId = isExistTag.id;
     }
 
     try {
       await Post.create({
         content: postDto.content,
-        user_id: postDto.user_id,
-        tag_id: tag_id,
+        user_id: postDto.userId,
+        tag_id: tagId,
       });
     } catch (error) {
-      return 'Error create new post!';
+      throw new HttpException('Error create new post!', HttpStatus.BAD_REQUEST);
     }
 
-    return 'Create post successful!';
+    return {
+      status: 204,
+      message: 'Create post successful!',
+    };
   }
 
-  async findAll() {
-    return Post.findAll();
+  async findAll(tagName: string) {
+    if (!tagName) {
+      return Post.findAll();
+    }
+
+    return this.findByTagName(tagName);
   }
 
-  async findByTagName(tag_name) {
-    let tag_id;
+  async findByTagName(tagName: string) {
     const tag = await Tag.findOne({
+      include: [Post],
       where: {
-        name: tag_name,
+        name: tagName,
       },
     });
 
-    if (tag) {
-      tag_id = tag.id;
+    if (!tag) {
+      throw new HttpException(
+        'Your tagName is not exist!',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    return await Post.findAll({
-      where: {
-        tag_id: tag_id,
-      },
+    const posts = tag.posts.map((item) => {
+      if (item.tag_id == tag.id) {
+        return item;
+      }
     });
+
+    return posts;
   }
 
-  async delete(id) {
+  async delete(id: number) {
     try {
       await Post.destroy({
         where: {
@@ -66,9 +79,12 @@ export class PostService {
         },
       });
     } catch (error) {
-      return 'Error delete the post! ' + error;
+      throw new HttpException('Error delete the post!', HttpStatus.BAD_REQUEST);
     }
 
-    return 'Delete post successful!';
+    return {
+      status: 200,
+      message: `Delete post with id = ${id} successful!`,
+    };
   }
 }

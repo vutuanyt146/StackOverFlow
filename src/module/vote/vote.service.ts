@@ -1,13 +1,14 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Vote } from '../../model/vote.entity';
+import { VoteDto } from './dto/vote.dto';
 
 @Injectable()
 export class VoteService {
-  async create(voteDto) {
+  async create(voteDto: VoteDto) {
     const isVoted = await Vote.findOne({
       where: {
-        user_id: voteDto.user_id,
-        post_id: voteDto.post_id,
+        user_id: voteDto.userId,
+        post_id: voteDto.postId,
       },
     });
 
@@ -15,21 +16,21 @@ export class VoteService {
       try {
         await Vote.destroy({
           where: {
-            user_id: voteDto.user_id,
-            post_id: voteDto.post_id,
+            user_id: voteDto.userId,
+            post_id: voteDto.postId,
           },
         });
       } catch (error) {
-        return 'Failed delete vote!' + error;
+        throw new HttpException('Failed delete vote!', HttpStatus.BAD_REQUEST);
       }
     }
 
-    if (!isVoted || isVoted.vote_type != voteDto.vote_type) {
+    if (!isVoted || isVoted.vote_type != voteDto.voteType) {
       try {
         Vote.create({
-          user_id: voteDto.user_id,
-          post_id: voteDto.post_id,
-          vote_type: voteDto.vote_type,
+          user_id: voteDto.userId,
+          post_id: voteDto.postId,
+          vote_type: voteDto.voteType,
         });
       } catch (error) {
         throw new HttpException(`Failed create vote ${error}!`, 404);
@@ -42,16 +43,18 @@ export class VoteService {
     };
   }
 
-  async countVote() {
+  async countVote(postId: number) {
     const upVote = await Vote.findAndCountAll({
       where: {
         vote_type: 'UP VOTE',
+        post_id: postId,
       },
     });
 
     const downVote = await Vote.findAndCountAll({
       where: {
         vote_type: 'DOWN VOTE',
+        post_id: postId,
       },
     });
 

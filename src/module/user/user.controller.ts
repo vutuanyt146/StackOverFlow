@@ -11,12 +11,12 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() userDto: UserDto): Promise<string> {
+  async create(@Body() userDto: UserDto) {
     return await this.userService.create(userDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<string> {
+  async delete(@Param('id') id: number) {
     return await this.userService.delete(id);
   }
 }

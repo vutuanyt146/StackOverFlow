@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { User } from '../../model/user.entity';
 
@@ -8,7 +8,7 @@ export class UserService {
     return await User.findAll();
   }
 
-  async create(userDto: UserDto): Promise<string> {
+  async create(userDto: UserDto) {
     try {
       await User.create({
         username: userDto.username,
@@ -19,14 +19,25 @@ export class UserService {
         role: userDto.role,
       });
     } catch (error) {
-      if (error.parent.code == 23505) return 'This username has been used!';
-      return 'Error add new user to database!\n' + error.name;
+      if (error.parent.code == 23505) {
+        throw new HttpException(
+          'This username has been used!',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        'Error add new user to database!',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    return 'Create user successful!';
+    return {
+      status: 204,
+      message: 'Create user successful!',
+    };
   }
 
-  async delete(id: number): Promise<string> {
+  async delete(id: number) {
     try {
       await User.destroy({
         where: {
@@ -34,9 +45,12 @@ export class UserService {
         },
       });
     } catch (error) {
-      return 'Error delete user!';
+      throw new HttpException('Error delete user!', HttpStatus.BAD_REQUEST);
     }
 
-    return 'Delete user with id successful!';
+    return {
+      status: 200,
+      message: `Delete user with id = ${id} successful!`,
+    };
   }
 }

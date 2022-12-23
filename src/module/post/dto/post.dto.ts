@@ -1,14 +1,11 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class PostDto {
-  @IsOptional()
-  readonly id: number;
-
   @IsNotEmpty()
   readonly content: string;
 
   @IsNotEmpty()
-  readonly user_id: number;
+  userId: number;
 
-  readonly tag_name: string;
+  tagName: string;
 }

@@ -2,12 +2,12 @@ import { IsIn, IsNotEmpty } from 'class-validator';
 
 export class VoteDto {
   @IsNotEmpty()
-  user_id: number;
+  userId: number;
 
   @IsNotEmpty()
-  post_id: number;
+  postId: number;
 
   @IsNotEmpty()
   @IsIn(['UP VOTE', 'DOWN VOTE'])
-  vote_type: string;
+  voteType: string;
 }

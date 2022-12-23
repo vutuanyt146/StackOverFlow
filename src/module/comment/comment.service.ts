@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Comment } from '../../model/comment.entity';
+import { CommentDto } from './dto/comment.dto';
 
 @Injectable()
 export class CommentService {
-  async Create(commentDto) {
+  async create(commentDto: CommentDto) {
     if (!!commentDto.commentId) {
       await Comment.create({
         content: commentDto.content,
@@ -32,15 +33,27 @@ export class CommentService {
 
     return {
       status: 204,
-      message: 'Successful!',
+      message: 'Successful create new comment!',
     };
   }
 
-  async Get(post_id) {
-    const listComments: any = [];
+  async get(postId: number, commentId: number) {
+    if (!!postId) {
+      return this.getParentComments(postId);
+    }
+
+    if (!!commentId) {
+      return this.getChildComments(commentId);
+    }
+
+    return Comment.findAll();
+  }
+
+  async getParentComments(postId: number) {
+    const listComments: Comment[] = [];
     const parentComments = await Comment.findAll({
       where: {
-        post_id: post_id,
+        post_id: postId,
         comment_id: null,
       },
     });
@@ -52,18 +65,16 @@ export class CommentService {
     return listComments;
   }
 
-  async GetChillComment(comment_id) {
-    console.log('comment_id: ', comment_id);
-
+  async getChildComments(commentId: number) {
     const arrComment: Comment[] = [];
-    const chillComments = await Comment.findAll({
+    const childComments = await Comment.findAll({
       where: {
-        comment_id: comment_id,
+        comment_id: commentId,
       },
     });
 
-    for (const chillComment of chillComments) {
-      arrComment.push(chillComment);
+    for (const childComment of childComments) {
+      arrComment.push(childComment);
     }
 
     return arrComment;

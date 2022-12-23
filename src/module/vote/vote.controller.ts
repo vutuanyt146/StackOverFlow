@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { VoteDto } from './dto/vote.dto';
 import { VoteService } from './vote.service';
 
@@ -11,8 +11,8 @@ export class VoteController {
     return await this.voteService.create(voteDto);
   }
 
-  @Get()
-  async countVote() {
-    return await this.voteService.countVote();
+  @Get('postId/:postId')
+  async countVote(@Param('postId') postId: number) {
+    return await this.voteService.countVote(postId);
   }
 }
