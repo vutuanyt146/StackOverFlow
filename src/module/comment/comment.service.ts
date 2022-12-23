@@ -5,8 +5,10 @@ import { CommentDto } from './dto/comment.dto';
 @Injectable()
 export class CommentService {
   async create(commentDto: CommentDto) {
+    let comment;
+
     if (!!commentDto.commentId) {
-      await Comment.create({
+      comment = await Comment.create({
         content: commentDto.content,
         comment_id: commentDto.commentId,
         user_id: commentDto.userId,
@@ -24,7 +26,7 @@ export class CommentService {
         },
       );
     } else {
-      await Comment.create({
+      comment = await Comment.create({
         content: commentDto.content,
         user_id: commentDto.userId,
         post_id: commentDto.postId,
@@ -34,6 +36,7 @@ export class CommentService {
     return {
       status: 204,
       message: 'Successful create new comment!',
+      comment: comment,
     };
   }
 

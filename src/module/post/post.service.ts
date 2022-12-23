@@ -7,6 +7,8 @@ import { PostDto } from './dto/post.dto';
 export class PostService {
   async create(postDto: PostDto) {
     let tagId;
+    let post;
+
     const isExistTag = await Tag.findOne({
       where: {
         name: postDto.tagName,
@@ -24,7 +26,7 @@ export class PostService {
     }
 
     try {
-      await Post.create({
+      post = await Post.create({
         content: postDto.content,
         user_id: postDto.userId,
         tag_id: tagId,
@@ -36,15 +38,28 @@ export class PostService {
     return {
       status: 204,
       message: 'Create post successful!',
+      post: post,
     };
   }
 
-  async findAll(tagName: string) {
-    if (!tagName) {
-      return Post.findAll();
+  async findAll(tagName: string, id: number) {
+    if (!!tagName) {
+      return this.findByTagName(tagName);
     }
 
-    return this.findByTagName(tagName);
+    if (!!id) {
+      return this.findById(id);
+    }
+
+    return Post.findAll();
+  }
+
+  async findById(id: number) {
+    return Post.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async findByTagName(tagName: string) {

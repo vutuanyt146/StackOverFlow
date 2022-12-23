@@ -9,8 +9,9 @@ export class UserService {
   }
 
   async create(userDto: UserDto) {
+    let user;
     try {
-      await User.create({
+      user = await User.create({
         username: userDto.username,
         password: userDto.password,
         email: userDto.email,
@@ -34,6 +35,7 @@ export class UserService {
     return {
       status: 204,
       message: 'Create user successful!',
+      user: user,
     };
   }
 

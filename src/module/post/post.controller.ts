@@ -22,8 +22,9 @@ export class PostController {
   @Get()
   async findAll(@Query() query) {
     const tagName = query['tagName'];
+    const id = query['id'];
 
-    return await this.postService.findAll(tagName);
+    return await this.postService.findAll(tagName, id);
   }
 
   @Delete(':id')
