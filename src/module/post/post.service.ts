@@ -5,7 +5,7 @@ import { PostDto } from './dto/post.dto';
 
 @Injectable()
 export class PostService {
-  async create(postDto: PostDto) {
+  async create(user, postDto: PostDto) {
     let tagId;
     let post;
 
@@ -28,7 +28,7 @@ export class PostService {
     try {
       post = await Post.create({
         content: postDto.content,
-        user_id: postDto.userId,
+        user_id: user.userId,
         tag_id: tagId,
       });
     } catch (error) {

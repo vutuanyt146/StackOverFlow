@@ -7,8 +7,5 @@ export class CommentDto {
   commentId: number;
 
   @IsNotEmpty()
-  userId: number;
-
-  @IsNotEmpty()
   postId: number;
 }

@@ -1,10 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Post } from 'src/model/post.entity';
 import { Vote } from '../../model/vote.entity';
 import { VoteDto } from './dto/vote.dto';
 
 @Injectable()
 export class VoteService {
   async create(voteDto: VoteDto) {
+    const isPostExist = await Post.findOne({
+      where: {
+        id: voteDto.postId,
+      },
+    });
+
+    if (!isPostExist) {
+      throw new HttpException(
+        'This post is not exist!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const isVoted = await Vote.findOne({
       where: {
         user_id: voteDto.userId,
@@ -33,7 +47,10 @@ export class VoteService {
           vote_type: voteDto.voteType,
         });
       } catch (error) {
-        throw new HttpException(`Failed create vote ${error}!`, 404);
+        throw new HttpException(
+          `Failed create vote ${error}!`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
 

@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
 import { PostDto } from './dto/post.dto';
 import { PostService } from './post.service';
 
@@ -14,9 +17,10 @@ import { PostService } from './post.service';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() postDto: PostDto) {
-    return await this.postService.create(postDto);
+  async create(@Req() user, @Body() postDto: PostDto) {
+    return await this.postService.create(user.user, postDto);
   }
 
   @Get()

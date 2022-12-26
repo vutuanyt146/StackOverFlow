@@ -11,6 +11,7 @@ import { UserController } from './module/user/user.controller';
 import { UserModule } from './module/user/user.module';
 import { CommentModule } from './module/comment/comment.module';
 import { UserService } from 'src/module/user/user.service';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserService } from 'src/module/user/user.service';
     VoteModule,
     UserModule,
     CommentModule,
+    AuthModule,
   ],
   controllers: [AppController, TagController, UserController],
   providers: [AppService, UserService],

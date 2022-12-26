@@ -1,17 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Comment } from '../../model/comment.entity';
 import { CommentDto } from './dto/comment.dto';
 
 @Injectable()
 export class CommentService {
-  async create(commentDto: CommentDto) {
+  async create(user, commentDto: CommentDto) {
     let comment;
 
     if (!!commentDto.commentId) {
+      const isExistComment = await Comment.findOne({
+        where: {
+          id: commentDto.commentId,
+        },
+      });
+
+      if (!isExistComment) {
+        throw new HttpException(
+          'The comment your reply is not existed!',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       comment = await Comment.create({
         content: commentDto.content,
         comment_id: commentDto.commentId,
-        user_id: commentDto.userId,
+        user_id: user.userId,
         post_id: commentDto.postId,
       });
 
@@ -28,7 +41,7 @@ export class CommentService {
     } else {
       comment = await Comment.create({
         content: commentDto.content,
-        user_id: commentDto.userId,
+        user_id: user.userId,
         post_id: commentDto.postId,
       });
     }

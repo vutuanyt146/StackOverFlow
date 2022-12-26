@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
 import { CommentService } from './comment.service';
 import { CommentDto } from './dto/comment.dto';
 
@@ -6,9 +15,10 @@ import { CommentDto } from './dto/comment.dto';
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() commentDto: CommentDto) {
-    return await this.commentService.create(commentDto);
+  async create(@Req() user, @Body() commentDto: CommentDto) {
+    return await this.commentService.create(user.user, commentDto);
   }
 
   @Get()
