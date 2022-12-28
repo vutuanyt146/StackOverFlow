@@ -4,6 +4,7 @@ import { MailService } from 'libs/mail/mail.service';
 import { User } from 'src/model/user.entity';
 import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class AuthService {
@@ -56,13 +57,13 @@ export class AuthService {
 
     const user = await User.findOne({
       where: {
-        username: body.username,
+        [Op.or]: [{ username: body.username }, { email: body.email }],
       },
     });
 
     if (!!user) {
       throw new HttpException(
-        `Your username is use with email ${(await user).email}`,
+        `Your username or email is used!`,
         HttpStatus.BAD_REQUEST,
       );
     }

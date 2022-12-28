@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from 'libs/passport/local-auth.guard';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 
@@ -7,7 +6,6 @@ import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() body: AuthLoginDto) {
     return this.authService.login(body);

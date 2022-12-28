@@ -4,7 +4,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
 import { jwtConstants } from 'libs/constant/constant';
-import { LocalStrategy } from 'libs/passport/local.stratery';
 import { JwtStrategy } from 'libs/passport/jwt.stratery';
 import { AuthController } from './auth.controller';
 import { MailModule } from 'libs/mail/mail.module';
@@ -20,7 +19,7 @@ import { MailService } from 'libs/mail/mail.service';
     }),
     MailModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, MailService],
+  providers: [AuthService, JwtStrategy, MailService],
   exports: [AuthService],
   controllers: [AuthController],
 })
