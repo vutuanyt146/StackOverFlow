@@ -7,6 +7,8 @@ import { jwtConstants } from 'libs/constant/constant';
 import { LocalStrategy } from 'libs/passport/local.stratery';
 import { JwtStrategy } from 'libs/passport/jwt.stratery';
 import { AuthController } from './auth.controller';
+import { MailModule } from 'libs/mail/mail.module';
+import { MailService } from 'libs/mail/mail.service';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { AuthController } from './auth.controller';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '6000s' },
     }),
+    MailModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, MailService],
   exports: [AuthService],
   controllers: [AuthController],
 })

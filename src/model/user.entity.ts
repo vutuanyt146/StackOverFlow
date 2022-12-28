@@ -42,6 +42,14 @@ export class User extends Model {
   })
   role: string;
 
+  @Column({
+    defaultValue: false,
+  })
+  is_active: boolean;
+
+  @Column
+  code_verify: string;
+
   @HasMany(() => Post)
   posts: Post[];
 

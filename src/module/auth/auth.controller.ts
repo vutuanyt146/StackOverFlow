@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
+import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from 'libs/passport/local-auth.guard';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto, VerifyEmailDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,13 +9,17 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() body: AuthDto) {
+  async login(@Body() body: AuthLoginDto) {
     return this.authService.login(body);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
+  @Post('register')
+  async register(@Body() body: AuthRegisterDto) {
+    return this.authService.register(body);
+  }
+
+  @Put('verify')
+  async verifyMail(@Body() body: VerifyEmailDto) {
+    return this.authService.verifyMail(body.email, body.codeVerify);
   }
 }

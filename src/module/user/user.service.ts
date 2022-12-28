@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UserDto } from './dto/user.dto';
+import { UpdateUserDto, UserDto } from './dto/user.dto';
 import { User } from '../../model/user.entity';
 
 @Injectable()
@@ -53,6 +53,25 @@ export class UserService {
     return {
       status: 200,
       message: `Delete user with id = ${id} successful!`,
+    };
+  }
+
+  async update(user: UpdateUserDto, userId: number) {
+    await User.update(
+      {
+        name: user.name,
+        phone: user.phone,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    return {
+      status: 200,
+      message: 'Update user successful!',
     };
   }
 }

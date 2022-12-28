@@ -12,6 +12,9 @@ import { UserModule } from './module/user/user.module';
 import { CommentModule } from './module/comment/comment.module';
 import { UserService } from 'src/module/user/user.service';
 import { AuthModule } from './module/auth/auth.module';
+import { MailModule } from 'libs/mail/mail.module';
+import { MailController } from 'libs/mail/mail.controller';
+import { MailService } from 'libs/mail/mail.service';
 
 @Module({
   imports: [
@@ -23,8 +26,9 @@ import { AuthModule } from './module/auth/auth.module';
     UserModule,
     CommentModule,
     AuthModule,
+    MailModule,
   ],
-  controllers: [AppController, TagController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController, TagController, UserController, MailController],
+  providers: [AppService, UserService, MailService],
 })
 export class AppModule {}

@@ -20,3 +20,11 @@ export class UserDto {
   @IsIn(['ADMIN', 'DEVELOPER', 'CUSTOMER', 'MAINTAINER'])
   role: string;
 }
+
+export class UpdateUserDto {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  phone: number;
+}
