@@ -79,7 +79,7 @@ export class AuthService {
     return {
       status: 200,
       message:
-        'Register successful! Please verify your email is active your account!',
+        'Register successful! Please click link in your email to active your account!',
     };
   }
 
@@ -104,6 +104,7 @@ export class AuthService {
     await User.update(
       {
         is_active: true,
+        code_verify: null,
       },
       {
         where: {
