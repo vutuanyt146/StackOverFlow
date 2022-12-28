@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'libs/mail/mail.service';
 import { User } from 'src/model/user.entity';
-import { Random } from 'util/random';
 import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +44,7 @@ export class AuthService {
       );
     }
 
-    const payload = { username: body.username, sub: user.id };
+    const payload = { username: body.username, user_id: user.id };
 
     return {
       access_token: this.jwtService.sign(payload),
@@ -52,8 +52,7 @@ export class AuthService {
   }
 
   async register(body: AuthRegisterDto) {
-    const random = new Random();
-    const randomCodeVerify = random.randomCodeVerify(14);
+    const randomCodeVerify = uuidv4();
 
     const user = await User.findOne({
       where: {

@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from 'libs/passport/local-auth.guard';
 import { AuthService } from './auth.service';
-import { AuthLoginDto, AuthRegisterDto, VerifyEmailDto } from './dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +18,11 @@ export class AuthController {
     return this.authService.register(body);
   }
 
-  @Put('verify')
-  async verifyMail(@Body() body: VerifyEmailDto) {
-    return this.authService.verifyMail(body.email, body.codeVerify);
+  @Get('verify')
+  async verifyMail(@Query() query) {
+    const email = query['email'];
+    const codeVerify = query['codeVerify'];
+
+    return this.authService.verifyMail(email, codeVerify);
   }
 }

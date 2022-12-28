@@ -19,12 +19,3 @@ export class AuthRegisterDto {
   @IsEmail()
   email: string;
 }
-
-export class VerifyEmailDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsNotEmpty()
-  codeVerify: string;
-}
