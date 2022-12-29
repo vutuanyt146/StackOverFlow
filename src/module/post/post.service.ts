@@ -28,7 +28,7 @@ export class PostService {
     try {
       post = await Post.create({
         content: postDto.content,
-        user_id: user.userId,
+        user_id: user.id,
         tag_id: tagId,
       });
     } catch (error) {
@@ -36,7 +36,7 @@ export class PostService {
     }
 
     return {
-      status: 204,
+      status: 201,
       message: 'Create post successful!',
       post: post,
     };

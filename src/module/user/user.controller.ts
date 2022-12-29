@@ -29,7 +29,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put()
   async update(@Body() user: UpdateUserDto, @Req() req) {
-    return this.userService.update(user, req.user.userId);
+    return this.userService.update(user, req.user.id);
   }
 
   @Delete(':id')

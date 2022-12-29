@@ -41,13 +41,13 @@ export class CommentService {
     } else {
       comment = await Comment.create({
         content: commentDto.content,
-        user_id: user.userId,
+        user_id: user.id,
         post_id: commentDto.postId,
       });
     }
 
     return {
-      status: 204,
+      status: 201,
       message: 'Successful create new comment!',
       comment: comment,
     };

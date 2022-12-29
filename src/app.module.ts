@@ -15,6 +15,7 @@ import { AuthModule } from './module/auth/auth.module';
 import { MailModule } from 'libs/mail/mail.module';
 import { MailController } from 'libs/mail/mail.controller';
 import { MailService } from 'libs/mail/mail.service';
+import { TwoFactorAuthModule } from './module/two-factor-auth/two-factor-auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MailService } from 'libs/mail/mail.service';
     CommentModule,
     AuthModule,
     MailModule,
+    TwoFactorAuthModule,
   ],
   controllers: [AppController, TagController, UserController, MailController],
   providers: [AppService, UserService, MailService],

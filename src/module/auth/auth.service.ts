@@ -5,12 +5,15 @@ import { User } from 'src/model/user.entity';
 import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
+import * as bcrypt from 'bcrypt';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private mailService: MailService,
+    private userService: UserService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -31,29 +34,26 @@ export class AuthService {
   }
 
   async login(body: AuthLoginDto) {
-    const user = await User.findOne({
-      where: {
-        username: body.username,
-        password: body.password,
-      },
-    });
+    const user = await this.getAuthenticatedUser(body.username, body.password);
 
-    if (!user) {
-      throw new HttpException(
-        'Username or password invalid!',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (user.is_enabled_two_factor_auth) {
     }
 
-    const payload = { username: body.username, user_id: user.id };
+    const payload = {
+      username: body.username,
+      user_id: user.id,
+      email: user.email,
+    };
 
     return {
       access_token: this.jwtService.sign(payload),
+      user: user,
     };
   }
 
   async register(body: AuthRegisterDto) {
     const randomCodeVerify = uuidv4();
+    const hashedPassword = await bcrypt.hash(body.password, 10);
 
     const user = await User.findOne({
       where: {
@@ -68,12 +68,14 @@ export class AuthService {
       );
     }
 
-    await User.create({
+    const userCreate = await User.create({
       username: body.username,
-      password: body.password,
+      password: hashedPassword,
       email: body.email,
       code_verify: randomCodeVerify,
     });
+    userCreate.password = undefined;
+    userCreate.code_verify = undefined;
 
     this.mailService.sendMail(body.email, randomCodeVerify);
 
@@ -81,6 +83,7 @@ export class AuthService {
       status: 200,
       message:
         'Register successful! Please click link in your email to active your account!',
+      user: userCreate,
     };
   }
 
@@ -118,5 +121,26 @@ export class AuthService {
       status: 200,
       message: 'Your mail is verified!',
     };
+  }
+
+  async getAuthenticatedUser(username: string, plainTextPassword: string) {
+    const user = await this.userService.getByUsername(username);
+
+    if (!user) {
+      throw new HttpException('Username is invalid!', HttpStatus.BAD_REQUEST);
+    }
+
+    const isPassword = await bcrypt.compare(plainTextPassword, user.password);
+
+    if (!isPassword) {
+      throw new HttpException('Password is invalid!', HttpStatus.BAD_REQUEST);
+    }
+    user.password = undefined;
+
+    return user;
+  }
+
+  public getCookieForLogOut() {
+    return ['Authentication=', 'HttpOnly', 'Path=/', 'Max-Age=0'];
   }
 }

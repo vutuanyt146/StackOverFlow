@@ -33,10 +33,58 @@ export class UserService {
     }
 
     return {
-      status: 204,
+      status: 201,
       message: 'Create user successful!',
       user: user,
     };
+  }
+
+  async getById(id: number) {
+    const user = await User.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (user) {
+      return user;
+    }
+
+    throw new HttpException(
+      'User with this id is not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  async getByUsername(username: string) {
+    const user = await User.findOne({
+      where: {
+        username: username,
+      },
+    });
+
+    if (user) {
+      return user;
+    }
+
+    throw new HttpException('This username is not exist', HttpStatus.NOT_FOUND);
+  }
+
+  async getByEmail(email: string) {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (user) {
+      return user;
+    }
+
+    throw new HttpException(
+      'User with this email is not exist',
+      HttpStatus.NOT_FOUND,
+    );
   }
 
   async delete(id: number) {
@@ -61,6 +109,8 @@ export class UserService {
       {
         name: user.name,
         phone: user.phone,
+        avatar: user.avatar,
+        interested_tags: user.interestedTags,
       },
       {
         where: {
@@ -73,5 +123,31 @@ export class UserService {
       status: 200,
       message: 'Update user successful!',
     };
+  }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+    return User.update(
+      {
+        code_verify: secret,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+  }
+
+  async turnOnTwoFactorAuthentication(userId: number) {
+    return User.update(
+      {
+        is_enabled_two_factor_auth: true,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
   }
 }

@@ -55,7 +55,7 @@ export class VoteService {
     }
 
     return {
-      status: 204,
+      status: 201,
       message: 'Successful',
     };
   }

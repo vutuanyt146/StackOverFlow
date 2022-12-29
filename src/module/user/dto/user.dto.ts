@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsIn } from 'class-validator';
+import { IsNotEmpty, IsIn, IsEmail, IsOptional } from 'class-validator';
 
 export class UserDto {
   @IsNotEmpty()
@@ -8,23 +8,31 @@ export class UserDto {
   password: string;
 
   @IsNotEmpty()
+  @IsEmail()
   email: string;
 
-  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
-  phone: number;
+  phone: string;
 
-  @IsNotEmpty()
+  avatar: string;
+
+  interestedTags: string;
+
   @IsIn(['ADMIN', 'DEVELOPER', 'CUSTOMER', 'MAINTAINER'])
   role: string;
 }
 
 export class UpdateUserDto {
-  @IsNotEmpty()
+  @IsOptional()
   name: string;
 
-  @IsNotEmpty()
-  phone: number;
+  @IsOptional()
+  phone: string;
+
+  @IsOptional()
+  avatar: string;
+
+  @IsOptional()
+  interestedTags: string;
 }

@@ -28,7 +28,9 @@ export class User extends Model {
   @Column
   password: string;
 
-  @Column
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column
@@ -49,6 +51,14 @@ export class User extends Model {
 
   @Column
   code_verify: string;
+
+  @Column
+  interested_tags: string;
+
+  @Column({
+    defaultValue: false,
+  })
+  is_enabled_two_factor_auth: boolean;
 
   @HasMany(() => Post)
   posts: Post[];
