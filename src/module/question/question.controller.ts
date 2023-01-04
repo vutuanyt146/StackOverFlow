@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -46,8 +48,8 @@ export class QuestionController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
+  async findById(@Param('id') id: string) {
+    return this.questionService.findById(+id);
   }
 
   @Patch(':id')
@@ -65,7 +67,22 @@ export class QuestionController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Req() req) {
+    const isQuestionExist = await this.questionService.findById(+id);
+
+    if (!isQuestionExist) {
+      throw new HttpException(
+        `The question with id ${id} is not exist!`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (req.user.id != isQuestionExist.userId) {
+      throw new HttpException(
+        'This question is not belong to you!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     await this.questionService.remove(+id);
 
     return {

@@ -14,7 +14,7 @@ export class VoteService {
   }
 
   async findAll() {
-    return Vote.findAll();
+    return Vote.findAndCountAll();
   }
 
   async findOne(id: number) {

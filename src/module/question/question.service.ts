@@ -21,7 +21,7 @@ export class QuestionService {
     return Question.findAll({ include: [Tag] });
   }
 
-  async findOne(id: number) {
+  async findById(id: number) {
     return Question.findOne({ where: { id }, include: [User] });
   }
 

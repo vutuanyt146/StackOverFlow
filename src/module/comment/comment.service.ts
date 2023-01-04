@@ -28,7 +28,7 @@ export class CommentService {
   async update(id: number, updateCommentDto: UpdateCommentDto) {
     return Comment.update(
       {
-        updateCommentDto,
+        content: updateCommentDto.content,
       },
       {
         where: { id },
