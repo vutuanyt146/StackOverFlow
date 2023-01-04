@@ -1,11 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Post } from 'src/model/post.entity';
+import { Question } from 'src/model/question.entity';
 import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
 import { Vote } from 'src/model/vote.entity';
 import { Comment } from 'src/model/comment.entity';
 
-const models = [User, Post, Tag, Vote, Comment];
+const models = [User, Question, Tag, Vote, Comment];
 
 export const databaseProviders = [
   {

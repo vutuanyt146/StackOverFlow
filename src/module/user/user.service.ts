@@ -1,15 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateUserDto, UserDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from '../../model/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
   async findAll() {
-    return await User.findAll();
+    return User.findAll();
   }
 
   async create(userDto: UserDto) {
     let user;
+
     try {
       user = await User.create({
         username: userDto.username,
@@ -20,12 +22,13 @@ export class UserService {
         role: userDto.role,
       });
     } catch (error) {
-      if (error.parent.code == 23505) {
+      if (error.parent?.code == 23505) {
         throw new HttpException(
           'This username has been used!',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.CONFLICT,
         );
       }
+
       throw new HttpException(
         'Error add new user to database!',
         HttpStatus.BAD_REQUEST,
@@ -42,7 +45,7 @@ export class UserService {
   async getById(id: number) {
     const user = await User.findOne({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -59,7 +62,7 @@ export class UserService {
   async getByUsername(username: string) {
     const user = await User.findOne({
       where: {
-        username: username,
+        username,
       },
     });
 
@@ -73,7 +76,7 @@ export class UserService {
   async getByEmail(email: string) {
     const user = await User.findOne({
       where: {
-        email: email,
+        email,
       },
     });
 
@@ -91,7 +94,7 @@ export class UserService {
     try {
       await User.destroy({
         where: {
-          id: id,
+          id,
         },
       });
     } catch (error) {
@@ -110,7 +113,7 @@ export class UserService {
         name: user.name,
         phone: user.phone,
         avatar: user.avatar,
-        interested_tags: user.interestedTags,
+        interestedTags: user.interestedTags,
       },
       {
         where: {
@@ -128,7 +131,7 @@ export class UserService {
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
     return User.update(
       {
-        code_verify: secret,
+        codeVerify: secret,
       },
       {
         where: {
@@ -141,7 +144,7 @@ export class UserService {
   async turnOnTwoFactorAuthentication(userId: number) {
     return User.update(
       {
-        is_enabled_two_factor_auth: true,
+        isEnabledTwoFactorAuth: true,
       },
       {
         where: {

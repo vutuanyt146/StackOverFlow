@@ -1,23 +1,12 @@
-import {
-  Table,
-  Column,
-  Model,
-  PrimaryKey,
-  AutoIncrement,
-  HasMany,
-} from 'sequelize-typescript';
-import { Post } from 'src/model/post.entity';
+import { Table, Column, HasMany } from 'sequelize-typescript';
+import { Question } from 'src/model/question.entity';
+import { Base } from './base.entity';
 
 @Table
-export class Tag extends Model {
-  @AutoIncrement
-  @PrimaryKey
-  @Column
-  id: number;
-
+export class Tag extends Base {
   @Column
   name: string;
 
-  @HasMany(() => Post)
-  posts: Post[];
+  @HasMany(() => Question)
+  question: Question[];
 }

@@ -9,8 +9,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
-import { UpdateUserDto, UserDto } from './dto/user.dto';
+import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -23,17 +24,33 @@ export class UserController {
 
   @Post()
   async create(@Body() userDto: UserDto) {
-    return await this.userService.create(userDto);
+    const user = await this.userService.create(userDto);
+
+    return {
+      message: 'Create user successful',
+      status: 200,
+      data: user,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Put()
   async update(@Body() user: UpdateUserDto, @Req() req) {
-    return this.userService.update(user, req.user.id);
+    await this.userService.update(user, req.user.id);
+
+    return {
+      message: 'Update user successful',
+      status: 200,
+    };
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    return await this.userService.delete(id);
+    await this.userService.delete(id);
+
+    return {
+      message: 'Delete user successful',
+      status: 200,
+    };
   }
 }

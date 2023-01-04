@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
-import { jwtConstants } from 'libs/constant/constant';
-import { JwtStrategy } from 'libs/passport/jwt.strategy';
+import { jwtConstants } from 'src/shared/constant/constant';
+import { JwtStrategy } from 'src/shared/passport/jwt.strategy';
 import { AuthController } from './auth.controller';
-import { MailModule } from 'libs/mail/mail.module';
-import { MailService } from 'libs/mail/mail.service';
+import { MailModule } from 'src/shared/mail/mail.module';
+import { MailService } from 'src/shared/mail/mail.service';
 import { UserService } from '../user/user.service';
 
 @Module({

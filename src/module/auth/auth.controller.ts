@@ -6,17 +6,27 @@ import {
   Query,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { AuthService } from './auth.service';
-import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
+import {
+  AuthLoginDto,
+  AuthRegisterDto,
+  TwoFactorAuthCodeDto,
+} from './dto/auth.dto';
 import RequestWithUser from './interface/request-with-user.interface';
 import { Response } from 'express';
+import { UserService } from '../user/user.service';
+import { User } from 'src/model/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Post('login')
   async login(@Body() body: AuthLoginDto) {
@@ -36,20 +46,37 @@ export class AuthController {
     return this.authService.verifyMail(email, codeVerify);
   }
 
+  @Post('generate')
   @UseGuards(JwtAuthGuard)
-  @Get('user')
-  authenticate(@Req() request: RequestWithUser) {
-    const user = request.user;
-    user.password = undefined;
+  async generate(@Res() response: Response, @Req() request: RequestWithUser) {
+    const { otpauthUrl } =
+      await this.authService.generateTwoFactorAuthenticationSecret(
+        request.user,
+      );
 
-    return user;
+    return this.authService.pipeQrCodeStream(response, otpauthUrl);
   }
 
+  @Post('turn-on')
   @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logOut(@Req() req, @Res() response: Response) {
-    response.setHeader('Set-Cookie', this.authService.getCookieForLogOut());
+  async turnOnTwoFactorAuthentication(
+    @Body() twoFactorAuthenticationCode: TwoFactorAuthCodeDto,
+    @Req() request: RequestWithUser,
+  ) {
+    const user = await User.findOne({
+      where: {
+        id: request.user.id,
+      },
+    });
 
-    return response.sendStatus(200);
+    const isCodeValid = this.authService.isTwoFactorAuthenticationCodeValid(
+      twoFactorAuthenticationCode.codeVerify,
+      user,
+    );
+
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+    await this.userService.turnOnTwoFactorAuthentication(request.user.id);
   }
 }

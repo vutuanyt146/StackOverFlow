@@ -1,12 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'libs/mail/mail.service';
+import { MailService } from 'src/shared/mail/mail.service';
 import { User } from 'src/model/user.entity';
 import { AuthLoginDto, AuthRegisterDto } from './dto/auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
+import { ConfigService } from '@nestjs/config';
+import { authenticator } from 'otplib';
+import { toFileStream } from 'qrcode';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -36,7 +41,7 @@ export class AuthService {
   async login(body: AuthLoginDto) {
     const user = await this.getAuthenticatedUser(body.username, body.password);
 
-    if (user.is_enabled_two_factor_auth) {
+    if (user.isEnabledTwoFactorAuth) {
     }
 
     const payload = {
@@ -72,10 +77,10 @@ export class AuthService {
       username: body.username,
       password: hashedPassword,
       email: body.email,
-      code_verify: randomCodeVerify,
+      codeVerify: randomCodeVerify,
     });
     userCreate.password = undefined;
-    userCreate.code_verify = undefined;
+    userCreate.codeVerify = undefined;
 
     this.mailService.sendMail(body.email, randomCodeVerify);
 
@@ -101,7 +106,7 @@ export class AuthService {
       );
     }
 
-    if (user.code_verify != codeVerify) {
+    if (user.codeVerify != codeVerify) {
       throw new HttpException('Your code is invalid!', HttpStatus.BAD_REQUEST);
     }
 
@@ -142,5 +147,35 @@ export class AuthService {
 
   public getCookieForLogOut() {
     return ['Authentication=', 'HttpOnly', 'Path=/', 'Max-Age=0'];
+  }
+
+  async generateTwoFactorAuthenticationSecret(user: User) {
+    const secret = authenticator.generateSecret();
+    const otpauthUrl = authenticator.keyuri(
+      user.email,
+      this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'),
+      secret,
+    );
+
+    await this.userService.setTwoFactorAuthenticationSecret(secret, user.id);
+
+    return {
+      secret,
+      otpauthUrl,
+    };
+  }
+
+  async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
+    return toFileStream(stream, otpauthUrl);
+  }
+
+  isTwoFactorAuthenticationCodeValid(
+    twoFactorAuthenticationCode: string,
+    user: User,
+  ) {
+    return authenticator.verify({
+      token: twoFactorAuthenticationCode,
+      secret: user.codeVerify,
+    });
   }
 }

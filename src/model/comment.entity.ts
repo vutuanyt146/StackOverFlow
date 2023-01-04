@@ -1,39 +1,27 @@
-import {
-  AutoIncrement,
-  BelongsTo,
-  Column,
-  ForeignKey,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
-import { Post } from 'src/model/post.entity';
+import { BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
+import { Question } from 'src/model/question.entity';
 import { User } from 'src/model/user.entity';
+import { Base } from './base.entity';
 
 @Table
-export class Comment extends Model {
-  @AutoIncrement
-  @PrimaryKey
-  @Column
-  id: number;
-
+export class Comment extends Base {
   @Column
   content: string;
 
-  @Column
-  comment_id: number;
+  @Column({ field: 'comment_id' })
+  commentId?: number;
 
   @ForeignKey(() => User)
-  @Column
-  user_id: number;
+  @Column({ field: 'user_id' })
+  userId: number;
 
-  @ForeignKey(() => Post)
-  @Column
-  post_id: number;
+  @ForeignKey(() => Question)
+  @Column({ field: 'post_id' })
+  postId: number;
 
   @BelongsTo(() => User)
   user: User;
 
-  @BelongsTo(() => Post)
-  post: Post;
+  @BelongsTo(() => Question)
+  post: Question;
 }

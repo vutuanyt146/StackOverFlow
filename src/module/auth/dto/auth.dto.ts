@@ -19,3 +19,8 @@ export class AuthRegisterDto {
   @IsEmail()
   email: string;
 }
+
+export class TwoFactorAuthCodeDto {
+  @IsNotEmpty()
+  codeVerify: string;
+}

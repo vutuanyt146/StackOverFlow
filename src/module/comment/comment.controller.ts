@@ -1,31 +1,83 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
-  Query,
-  Req,
+  Body,
+  Patch,
+  Param,
+  Delete,
   UseGuards,
+  Req,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'libs/passport/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { CommentService } from './comment.service';
-import { CommentDto } from './dto/comment.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Req() user, @Body() commentDto: CommentDto) {
-    return await this.commentService.create(user.user, commentDto);
+  async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
+    if (createCommentDto.commentId) {
+      const isCommentExist = await this.commentService.findById(
+        createCommentDto.commentId,
+      );
+
+      if (!isCommentExist) {
+        throw new HttpException(
+          'Your comment you reply is not exist!',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const comment = await this.commentService.create(
+      req.user,
+      createCommentDto,
+    );
+
+    return {
+      message: 'Create message successful',
+      status: 200,
+      data: comment,
+    };
   }
 
   @Get()
-  async get(@Query() query) {
-    const postId = query['postId'];
-    const commentId = query['commentId'];
+  async findAll() {
+    return this.commentService.findAll();
+  }
 
-    return await this.commentService.get(postId, commentId);
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return this.commentService.findById(+id);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    await this.commentService.update(+id, updateCommentDto);
+
+    return {
+      message: 'Update comment successful',
+      status: 200,
+    };
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.commentService.remove(+id);
+
+    return {
+      message: 'Delete comment successful',
+      status: 200,
+    };
   }
 }

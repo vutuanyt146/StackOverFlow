@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsIn, IsEmail, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsIn, IsEmail } from 'class-validator';
+import { Role } from 'src/model/user.entity';
 
 export class UserDto {
   @IsNotEmpty()
@@ -19,20 +20,6 @@ export class UserDto {
 
   interestedTags: string;
 
-  @IsIn(['ADMIN', 'DEVELOPER', 'CUSTOMER', 'MAINTAINER'])
-  role: string;
-}
-
-export class UpdateUserDto {
-  @IsOptional()
-  name: string;
-
-  @IsOptional()
-  phone: string;
-
-  @IsOptional()
-  avatar: string;
-
-  @IsOptional()
-  interestedTags: string;
+  @IsIn([...Object.values(Role)])
+  role: Role;
 }

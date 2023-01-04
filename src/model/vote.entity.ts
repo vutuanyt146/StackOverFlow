@@ -1,41 +1,39 @@
 import {
   Table,
   Column,
-  Model,
-  PrimaryKey,
-  AutoIncrement,
   ForeignKey,
   BelongsTo,
   DataType,
 } from 'sequelize-typescript';
 import { User } from 'src/model/user.entity';
-import { Post } from './post.entity';
+import { Base } from './base.entity';
+import { Question } from './question.entity';
 
-const VOTE_TYPE = DataType.ENUM('UP VOTE', 'DOWN VOTE');
+export enum VoteType {
+  UP_VOTE = 'UP_VOTE',
+  DOWN_VOTE = 'DOWN_VOTE',
+}
+const VOTE_TYPE = DataType.ENUM(...Object.values(VoteType));
 
 @Table
-export class Vote extends Model {
-  @AutoIncrement
-  @PrimaryKey
-  @Column
-  id: number;
-
+export class Vote extends Base {
   @ForeignKey(() => User)
-  @Column
-  user_id: number;
+  @Column({ field: 'user_id' })
+  userId: number;
 
-  @ForeignKey(() => Post)
-  @Column
-  post_id: number;
+  @ForeignKey(() => Question)
+  @Column({ field: 'question_id' })
+  questionId: number;
 
   @Column({
     type: VOTE_TYPE,
+    field: 'vote_type',
   })
-  vote_type: string;
+  voteType: VoteType;
 
   @BelongsTo(() => User)
   user: User;
 
-  @BelongsTo(() => Post)
-  post: Post;
+  @BelongsTo(() => Question)
+  question: Question;
 }

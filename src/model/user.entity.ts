@@ -1,25 +1,19 @@
-import {
-  AutoIncrement,
-  Column,
-  DataType,
-  HasMany,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
-import { Post } from 'src/model/post.entity';
+import { Column, DataType, HasMany, Table } from 'sequelize-typescript';
+import { Question } from 'src/model/question.entity';
 import { Comment } from 'src/model/comment.entity';
 import { Vote } from './vote.entity';
+import { Base } from './base.entity';
 
-const ROLE = DataType.ENUM('ADMIN', 'DEVELOPER', 'CUSTOMER', 'MAINTAINER');
+export enum Role {
+  ADMIN = 'ADMIN',
+  DEVELOPER = 'DEVELOPER',
+  CUSTOMER = 'CUSTOMER',
+  MAINTAINER = 'MAINTAINER',
+}
+const ROLE = DataType.ENUM(...Object.values(Role));
 
 @Table
-export class User extends Model {
-  @AutoIncrement
-  @PrimaryKey
-  @Column
-  id: number;
-
+export class User extends Base {
   @Column({
     unique: true,
   })
@@ -42,26 +36,28 @@ export class User extends Model {
   @Column({
     type: ROLE,
   })
-  role: string;
+  role: Role;
 
   @Column({
     defaultValue: false,
+    field: 'is_active',
   })
-  is_active: boolean;
+  isActive: boolean;
 
-  @Column
-  code_verify: string;
+  @Column({ field: 'code_verify' })
+  codeVerify: string;
 
-  @Column
-  interested_tags: string;
+  @Column({ field: 'interested_tags' })
+  interestedTags: string;
 
   @Column({
     defaultValue: false,
+    field: 'is_enabled_two_factor_auth',
   })
-  is_enabled_two_factor_auth: boolean;
+  isEnabledTwoFactorAuth: boolean;
 
-  @HasMany(() => Post)
-  posts: Post[];
+  @HasMany(() => Question)
+  questions: Question[];
 
   @HasMany(() => Comment)
   comments: Comment[];
