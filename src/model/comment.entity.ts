@@ -16,12 +16,12 @@ export class Comment extends Base {
   userId: number;
 
   @ForeignKey(() => Question)
-  @Column({ field: 'post_id' })
-  postId: number;
+  @Column({ field: 'question_id' })
+  questionId: number;
 
   @BelongsTo(() => User)
   user: User;
 
   @BelongsTo(() => Question)
-  post: Question;
+  question: Question;
 }

@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,12 +15,37 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
+export enum TimeFilter {
+  WEEK = 'week',
+  MONTH = 'month',
+  QUARTER = 'quarter',
+  YEAR = 'year',
+  ALL = 'all',
+}
+
+export enum TabFilter {
+  REPUTATION = 'reputation',
+  NEW_USERS = 'new_users',
+  VOTES = 'votes',
+  EDITORS = 'editors',
+  MODERATORS = 'moderators',
+}
+
+export enum Filter {
+  TIME = 'TimeFilter',
+  TAB = 'TabFilter',
+}
+
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @Get()
-  async findAll() {
-    return this.userService.findAll();
+  async findAll(@Query() query) {
+    const tab = query[Filter.TAB];
+    const time = query[Filter.TIME];
+
+    return this.userService.findAll(tab, time);
   }
 
   @Post()

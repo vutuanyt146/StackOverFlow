@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { MailModule } from 'src/shared/mail/mail.module';
 import { MailService } from 'src/shared/mail/mail.service';
 import { UserService } from '../user/user.service';
+import { VoteModule } from '../vote/vote.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserService } from '../user/user.service';
       signOptions: { expiresIn: '6000s' },
     }),
     MailModule,
+    VoteModule,
   ],
   providers: [AuthService, JwtStrategy, MailService, UserService],
   exports: [AuthService],

@@ -13,7 +13,7 @@ export class CommentService {
         ? createCommentDto.commentId
         : null),
       userId: +user.id,
-      postId: +createCommentDto.postId,
+      questionId: +createCommentDto.questionId,
     });
   }
 

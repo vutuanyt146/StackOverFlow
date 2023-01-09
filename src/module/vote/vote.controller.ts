@@ -45,6 +45,11 @@ export class VoteController {
     return this.voteService.findAll();
   }
 
+  @Get('/question/:questionId')
+  async findVoteByQuestionId(@Param('questionId') questionId: number) {
+    return this.voteService.findVoteByQuestionId(questionId);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.voteService.findOne(+id);

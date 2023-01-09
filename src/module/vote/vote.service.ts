@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Vote } from 'src/model/vote.entity';
+import { Vote, VoteType } from 'src/model/vote.entity';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { UpdateVoteDto } from './dto/update-vote.dto';
 
@@ -15,6 +15,18 @@ export class VoteService {
 
   async findAll() {
     return Vote.findAndCountAll();
+  }
+
+  async findVoteByQuestionId(questionId: number) {
+    const data = await Vote.findAndCountAll({ where: { questionId } });
+
+    return {
+      upvote: data.rows.filter((item) => item.voteType == VoteType.UP_VOTE)
+        .length,
+      downvote: data.rows.filter((item) => item.voteType == VoteType.DOWN_VOTE)
+        .length,
+      data,
+    };
   }
 
   async findOne(id: number) {
