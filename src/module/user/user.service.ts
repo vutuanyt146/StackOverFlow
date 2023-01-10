@@ -42,7 +42,7 @@ export class UserService {
         email: userDto.email,
         name: userDto.name,
         phone: userDto.phone,
-        role: userDto.role,
+        location: userDto.location,
       });
     } catch (error) {
       if (error?.parent?.code == DUPLICATED) {
@@ -137,6 +137,7 @@ export class UserService {
         phone: user.phone,
         avatar: user.avatar,
         interestedTags: user.interestedTags,
+        location: user.location,
       },
       {
         where: {

@@ -1,3 +1,4 @@
+import { TEXT } from 'sequelize';
 import {
   Table,
   Column,
@@ -15,10 +16,10 @@ export class Question extends Base {
   @Column
   title: string;
 
-  @Column({ field: 'text_content' })
+  @Column({ field: 'text_content', type: TEXT })
   textContent: string;
 
-  @Column({ field: 'code_content' })
+  @Column({ field: 'code_content', type: TEXT })
   codeContent: string;
 
   @ForeignKey(() => User)

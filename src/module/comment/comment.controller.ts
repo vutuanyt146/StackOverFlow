@@ -43,7 +43,7 @@ export class CommentController {
 
     return {
       message: 'Create message successful',
-      status: 200,
+      status: 201,
       data: comment,
     };
   }

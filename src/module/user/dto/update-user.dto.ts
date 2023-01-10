@@ -1,6 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsOptional } from 'class-validator';
-import { Role } from 'src/model/user.entity';
 import { UserDto } from './user.dto';
 
 export class UpdateUserDto extends PartialType(UserDto) {
@@ -17,5 +16,5 @@ export class UpdateUserDto extends PartialType(UserDto) {
   interestedTags: string;
 
   @IsOptional()
-  role: Role;
+  location?: string;
 }

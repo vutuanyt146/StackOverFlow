@@ -54,7 +54,7 @@ export class UserController {
 
     return {
       message: 'Create user successful',
-      status: 200,
+      status: 201,
       data: user,
     };
   }

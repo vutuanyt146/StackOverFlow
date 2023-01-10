@@ -37,7 +37,7 @@ export class QuestionController {
 
     return {
       message: 'Create question successful',
-      status: 200,
+      status: 201,
       data: question,
     };
   }

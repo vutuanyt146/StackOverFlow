@@ -21,27 +21,27 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await User.findOne({
-      where: {
-        username: username,
-      },
-    });
+  // async validateUser(username: string, pass: string): Promise<any> {
+  //   const user = await User.findOne({
+  //     where: {
+  //       username: username,
+  //     },
+  //   });
 
-    if (user && user.password === pass) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
+  //   if (user && user.password === pass) {
+  //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //     const { password, ...result } = user;
 
-      return result;
-    }
+  //     return result;
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   async login(body: AuthLoginDto) {
     const user = await this.getAuthenticatedUser(body.username, body.password);
 
-    if (user.isEnabledTwoFactorAuth) {
+    if (user.isEnabled2FA) {
     }
 
     const payload = {
@@ -66,10 +66,10 @@ export class AuthService {
       },
     });
 
-    if (!!user) {
+    if (user) {
       throw new HttpException(
         `Your username or email is used!`,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.CONFLICT,
       );
     }
 
@@ -85,7 +85,7 @@ export class AuthService {
     this.mailService.sendMail(body.email, randomCodeVerify);
 
     return {
-      status: 200,
+      status: 201,
       message:
         'Register successful! Please click link in your email to active your account!',
       user: userCreate,
@@ -112,8 +112,8 @@ export class AuthService {
 
     await User.update(
       {
-        is_active: true,
-        code_verify: null,
+        isActive: true,
+        codeVerify: null,
       },
       {
         where: {
@@ -128,25 +128,28 @@ export class AuthService {
     };
   }
 
-  async getAuthenticatedUser(username: string, plainTextPassword: string) {
+  async getAuthenticatedUser(username: string, password: string) {
     const user = await this.userService.getByUsername(username);
 
     if (!user) {
       throw new HttpException('Username is invalid!', HttpStatus.BAD_REQUEST);
     }
 
-    const isPassword = await bcrypt.compare(plainTextPassword, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
-    if (!isPassword) {
+    if (!isValidPassword) {
       throw new HttpException('Password is invalid!', HttpStatus.BAD_REQUEST);
     }
     user.password = undefined;
 
-    return user;
-  }
+    if (!user.isActive) {
+      throw new HttpException(
+        'Your account is not active! Please verify your mail!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-  public getCookieForLogOut() {
-    return ['Authentication=', 'HttpOnly', 'Path=/', 'Max-Age=0'];
+    return user;
   }
 
   async generateTwoFactorAuthenticationSecret(user: User) {

@@ -11,7 +11,7 @@ export class MailService {
         to: email, // list of receivers
         from: 'noreply@nestjs.com', // sender address
         subject: 'Verify mail ✔', // Subject line
-        html: `<h1><a href="http://localhost:3000/api/auth/verify?email=${email}&codeVerify=${codeVerify}"> Click here to verify your mail! </a></h1>`, // HTML body content
+        html: `<h1><a href="http://localhost:3000/verify"> Click here to verify your mail! </a></h1>`, // HTML body content
       })
       .then()
       .catch((error) => {

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
   Query,
   Req,
@@ -38,7 +37,7 @@ export class AuthController {
     return this.authService.register(body);
   }
 
-  @Get('verify')
+  @Post('verify')
   async verifyMail(@Query() query) {
     const email = query['email'];
     const codeVerify = query['codeVerify'];

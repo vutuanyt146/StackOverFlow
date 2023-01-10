@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsIn, IsEmail } from 'class-validator';
-import { Role } from 'src/model/user.entity';
+import { IsNotEmpty, IsEmail } from 'class-validator';
 
 export class UserDto {
   @IsNotEmpty()
@@ -20,6 +19,5 @@ export class UserDto {
 
   interestedTags: string;
 
-  @IsIn([...Object.values(Role)])
-  role: Role;
+  location: string;
 }

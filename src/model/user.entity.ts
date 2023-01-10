@@ -1,16 +1,8 @@
-import { Column, DataType, HasMany, Table } from 'sequelize-typescript';
+import { Column, HasMany, Table } from 'sequelize-typescript';
 import { Question } from 'src/model/question.entity';
 import { Comment } from 'src/model/comment.entity';
 import { Vote } from './vote.entity';
 import { Base } from './base.entity';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  DEVELOPER = 'DEVELOPER',
-  CUSTOMER = 'CUSTOMER',
-  MAINTAINER = 'MAINTAINER',
-}
-const ROLE = DataType.ENUM(...Object.values(Role));
 
 @Table
 export class User extends Base {
@@ -30,14 +22,6 @@ export class User extends Base {
   @Column
   name: string;
 
-  @Column
-  phone: string;
-
-  @Column({
-    type: ROLE,
-  })
-  role: Role;
-
   @Column({
     defaultValue: false,
     field: 'is_active',
@@ -50,11 +34,14 @@ export class User extends Base {
   @Column({ field: 'interested_tags' })
   interestedTags: string;
 
+  @Column({ field: 'location' })
+  location: string;
+
   @Column({
     defaultValue: false,
-    field: 'is_enabled_two_factor_auth',
+    field: 'is_enabled_2fa',
   })
-  isEnabledTwoFactorAuth: boolean;
+  isEnabled2FA: boolean;
 
   @HasMany(() => Question)
   questions: Question[];
