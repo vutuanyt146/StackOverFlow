@@ -141,6 +141,7 @@ export class AuthService {
       throw new HttpException('Password is invalid!', HttpStatus.BAD_REQUEST);
     }
     user.password = undefined;
+    user.codeVerify = undefined;
 
     if (!user.isActive) {
       throw new HttpException(
@@ -148,6 +149,9 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    user.isActive = undefined;
+    user.isEnabled2FA = undefined;
 
     return user;
   }

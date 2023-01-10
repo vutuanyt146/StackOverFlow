@@ -16,11 +16,11 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
-@UseGuards(JwtAuthGuard)
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
     if (createCommentDto.commentId) {
@@ -58,6 +58,7 @@ export class CommentController {
     return this.commentService.findById(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -71,6 +72,7 @@ export class CommentController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.commentService.remove(+id);
