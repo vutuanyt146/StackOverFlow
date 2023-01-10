@@ -18,13 +18,13 @@ import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { TagService } from '../tag/tag.service';
 
 @Controller('question')
-@UseGuards(JwtAuthGuard)
 export class QuestionController {
   constructor(
     private readonly questionService: QuestionService,
     private readonly tagService: TagService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createQuestionDto: CreateQuestionDto, @Req() req) {
     const tag = await this.tagService.getOrCreateTag(createQuestionDto.tagName);
@@ -52,6 +52,7 @@ export class QuestionController {
     return this.questionService.findById(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -66,6 +67,7 @@ export class QuestionController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
     const isQuestionExist = await this.questionService.findById(+id);
