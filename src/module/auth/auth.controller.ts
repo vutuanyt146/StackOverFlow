@@ -48,12 +48,12 @@ export class AuthController {
   @Post('generate')
   @UseGuards(JwtAuthGuard)
   async generate(@Res() response: Response, @Req() request: RequestWithUser) {
-    const { otpauthUrl } =
+    const { otpAuthUrl } =
       await this.authService.generateTwoFactorAuthenticationSecret(
         request.user,
       );
 
-    return this.authService.pipeQrCodeStream(response, otpauthUrl);
+    return this.authService.pipeQrCodeStream(response, otpAuthUrl);
   }
 
   @Post('turn-on')

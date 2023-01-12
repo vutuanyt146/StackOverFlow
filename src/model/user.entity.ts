@@ -3,6 +3,7 @@ import { Question } from 'src/model/question.entity';
 import { Comment } from 'src/model/comment.entity';
 import { Vote } from './vote.entity';
 import { Base } from './base.entity';
+import { Exclude } from 'class-transformer';
 
 @Table
 export class User extends Base {
@@ -11,6 +12,7 @@ export class User extends Base {
   })
   username: string;
 
+  @Exclude()
   @Column
   password: string;
 

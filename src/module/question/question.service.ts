@@ -21,7 +21,10 @@ export class QuestionService {
   }
 
   async findById(id: number) {
-    return Question.findOne({ where: { id }, include: [User] });
+    return Question.findOne({
+      where: { id },
+      include: [User, Tag],
+    });
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {

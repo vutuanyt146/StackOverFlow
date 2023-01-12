@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { VoteService } from './vote.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
@@ -50,9 +51,20 @@ export class VoteController {
     return this.voteService.findVoteByQuestionId(questionId);
   }
 
+  @Get('status')
+  async getVoteStatus(@Query() query, @Req() req) {
+    const questionId = query['questionId'];
+    const vote = await this.voteService.getVoteStatus(req.user.id, questionId);
+
+    return {
+      statusVote: vote.voteType,
+      status: 200,
+    };
+  }
+
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.voteService.findOne(+id);
+  async findById(@Param('id') id: string) {
+    return this.voteService.findById(+id);
   }
 
   @Patch(':id')

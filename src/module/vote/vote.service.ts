@@ -36,8 +36,17 @@ export class VoteService {
     };
   }
 
-  async findOne(id: number) {
+  async findById(id: number) {
     return Vote.findOne({ where: { id } });
+  }
+
+  async getVoteStatus(userId: number, questionId: number) {
+    return Vote.findOne({
+      where: {
+        userId,
+        questionId,
+      },
+    });
   }
 
   async update(id: number, updateVoteDto: UpdateVoteDto) {

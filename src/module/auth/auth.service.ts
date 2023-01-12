@@ -102,7 +102,7 @@ export class AuthService {
     if (!user) {
       throw new HttpException(
         'This email has not been use with any username',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -158,7 +158,7 @@ export class AuthService {
 
   async generateTwoFactorAuthenticationSecret(user: User) {
     const secret = authenticator.generateSecret();
-    const otpauthUrl = authenticator.keyuri(
+    const otpAuthUrl = authenticator.keyuri(
       user.email,
       this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'),
       secret,
@@ -168,7 +168,7 @@ export class AuthService {
 
     return {
       secret,
-      otpauthUrl,
+      otpAuthUrl,
     };
   }
 
