@@ -36,7 +36,7 @@ export class User extends Base {
   @Column({ field: 'interested_tags' })
   interestedTags: string;
 
-  @Column({ field: 'location' })
+  @Column
   location: string;
 
   @Column({

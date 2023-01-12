@@ -40,13 +40,6 @@ export enum Filter {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async findAll(@Query() query) {
-    const tab = query[Filter.TAB];
-
-    return this.userService.findAll(tab);
-  }
-
   @Post()
   async create(@Body() userDto: UserDto) {
     const user = await this.userService.create(userDto);
@@ -56,6 +49,18 @@ export class UserController {
       status: 201,
       data: user,
     };
+  }
+
+  @Get()
+  async getAllByTabFilter(@Query() query) {
+    const tab = query[Filter.TAB];
+
+    return this.userService.getAllByTabFilter(tab);
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: number) {
+    return this.userService.getById(id);
   }
 
   @UseGuards(JwtAuthGuard)

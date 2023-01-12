@@ -14,7 +14,7 @@ const DUPLICATED = 23505;
 export class UserService {
   constructor(private voteService: VoteService) {}
 
-  async findAll(tab) {
+  async getAllByTabFilter(tab) {
     const users = await User.findAll({
       include: [Comment, Vote, Question],
     });
@@ -36,9 +36,6 @@ export class UserService {
         username: userDto.username,
         password: userDto.password,
         email: userDto.email,
-        name: userDto.name,
-        phone: userDto.phone,
-        location: userDto.location,
       });
     } catch (error) {
       if (error?.parent?.code == DUPLICATED) {
@@ -180,8 +177,13 @@ export class UserService {
         return this.sortByVote(users);
       case TabFilter.NEW_USERS:
         return this.sortByNewUser(users);
-      default:
+      case TabFilter.REPUTATION:
         return this.sortByReputation(users);
+      default:
+        throw new HttpException(
+          'This tab filter is not supported!',
+          HttpStatus.BAD_REQUEST,
+        );
     }
   }
 
@@ -223,8 +225,10 @@ export class UserService {
 
   async sortByVote(users: User[]) {
     const result: any = [];
+
     for (const user of users) {
       let vote = 0;
+
       for (const question of user.questions) {
         const data = await this.voteService.findVoteByQuestionId(question.id);
         vote += data.data.count;

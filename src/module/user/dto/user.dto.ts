@@ -13,10 +13,6 @@ export class UserDto {
 
   name: string;
 
-  phone: string;
-
-  avatar: string;
-
   interestedTags: string;
 
   location: string;

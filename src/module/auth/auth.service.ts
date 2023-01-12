@@ -21,23 +21,6 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  // async validateUser(username: string, pass: string): Promise<any> {
-  //   const user = await User.findOne({
-  //     where: {
-  //       username: username,
-  //     },
-  //   });
-
-  //   if (user && user.password === pass) {
-  //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //     const { password, ...result } = user;
-
-  //     return result;
-  //   }
-
-  //   return null;
-  // }
-
   async login(body: AuthLoginDto) {
     const user = await this.getAuthenticatedUser(body.username, body.password);
 
