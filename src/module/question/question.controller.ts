@@ -87,7 +87,7 @@ export class QuestionController {
       );
     }
 
-    if (req.user.id != isExistQuestion.userId) {
+    if (req.user.id != isExistQuestion.user.id) {
       throw new HttpException(
         'This question is not belong to you!',
         HttpStatus.BAD_REQUEST,

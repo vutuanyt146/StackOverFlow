@@ -21,10 +21,27 @@ export class QuestionService {
   }
 
   async findById(id: number) {
-    return Question.findOne({
+    const question = await Question.findOne({
       where: { id },
-      include: [User, Tag],
     });
+
+    const user = await User.findOne({
+      where: { id: question.userId },
+      include: [
+        {
+          model: Question,
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    const reputation = user.questions?.length * 10;
+
+    return {
+      question,
+      user,
+      reputation,
+    };
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {

@@ -7,9 +7,6 @@ export class UpdateUserDto extends PartialType(UserDto) {
   name: string;
 
   @IsOptional()
-  phone: string;
-
-  @IsOptional()
   avatar: string;
 
   @IsOptional()

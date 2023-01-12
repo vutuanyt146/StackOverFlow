@@ -127,8 +127,6 @@ export class UserService {
     await User.update(
       {
         name: user.name,
-        phone: user.phone,
-        avatar: user.avatar,
         interestedTags: user.interestedTags,
         location: user.location,
       },
