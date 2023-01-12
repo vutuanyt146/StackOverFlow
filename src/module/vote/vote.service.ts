@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Vote, VoteType } from 'src/model/vote.entity';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { UpdateVoteDto } from './dto/update-vote.dto';
@@ -19,6 +19,13 @@ export class VoteService {
 
   async findVoteByQuestionId(questionId: number) {
     const data = await Vote.findAndCountAll({ where: { questionId } });
+
+    if (data.count == 0) {
+      throw new HttpException(
+        'The question is not found!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return {
       upvote: data.rows.filter((item) => item.voteType == VoteType.UP_VOTE)

@@ -7,13 +7,12 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Injectable()
 export class QuestionService {
-  async create(tagId, user, createQuestionDto: CreateQuestionDto) {
+  async create(user, createQuestionDto: CreateQuestionDto) {
     return Question.create({
       title: createQuestionDto.title,
       textContent: createQuestionDto.textContent,
       codeContent: createQuestionDto.codeContent,
       userId: user.id,
-      tagId,
     });
   }
 
@@ -25,17 +24,12 @@ export class QuestionService {
     return Question.findOne({ where: { id }, include: [User] });
   }
 
-  async update(
-    id: number,
-    tagId: number,
-    updateQuestionDto: UpdateQuestionDto,
-  ) {
+  async update(id: number, updateQuestionDto: UpdateQuestionDto) {
     return Question.update(
       {
         title: updateQuestionDto.title,
         textContent: updateQuestionDto.textContent,
         codeContent: updateQuestionDto.codeContent,
-        tagId,
       },
       {
         where: { id },

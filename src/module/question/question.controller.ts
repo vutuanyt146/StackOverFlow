@@ -16,6 +16,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { TagService } from '../tag/tag.service';
+import { QuestionTag } from 'src/model/questionTag.entity';
 
 @Controller('question')
 export class QuestionController {
@@ -27,13 +28,21 @@ export class QuestionController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createQuestionDto: CreateQuestionDto, @Req() req) {
-    const tag = await this.tagService.getOrCreateTag(createQuestionDto.tagName);
+    const tagList = await this.tagService.getOrCreateTagList(
+      createQuestionDto.tagName,
+    );
 
-    const question = this.questionService.create(
-      tag.id,
+    const question = await this.questionService.create(
       req.user,
       createQuestionDto,
     );
+
+    for (const tag of tagList) {
+      QuestionTag.create({
+        tagId: tag.id,
+        questionId: question.id,
+      });
+    }
 
     return {
       message: 'Create question successful',
@@ -58,8 +67,7 @@ export class QuestionController {
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    const tag = await this.tagService.getOrCreateTag(updateQuestionDto.tagName);
-    await this.questionService.update(+id, tag.id, updateQuestionDto);
+    await this.questionService.update(+id, updateQuestionDto);
 
     return {
       message: 'Update question successful',
@@ -70,16 +78,16 @@ export class QuestionController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    const isQuestionExist = await this.questionService.findById(+id);
+    const isExistQuestion = await this.questionService.findById(+id);
 
-    if (!isQuestionExist) {
+    if (!isExistQuestion) {
       throw new HttpException(
         `The question with id ${id} is not exist!`,
         HttpStatus.NOT_FOUND,
       );
     }
 
-    if (req.user.id != isQuestionExist.userId) {
+    if (req.user.id != isExistQuestion.userId) {
       throw new HttpException(
         'This question is not belong to you!',
         HttpStatus.BAD_REQUEST,

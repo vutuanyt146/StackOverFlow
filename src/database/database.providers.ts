@@ -4,8 +4,9 @@ import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
 import { Vote } from 'src/model/vote.entity';
 import { Comment } from 'src/model/comment.entity';
+import { QuestionTag } from 'src/model/questionTag.entity';
 
-const models = [User, Question, Tag, Vote, Comment];
+const models = [User, Question, Tag, Vote, Comment, QuestionTag];
 
 export const databaseProviders = [
   {

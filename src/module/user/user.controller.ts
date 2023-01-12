@@ -32,7 +32,7 @@ export enum TabFilter {
 }
 
 export enum Filter {
-  TIME = 'TimeFilter',
+  // TIME = 'TimeFilter',
   TAB = 'TabFilter',
 }
 
@@ -43,9 +43,8 @@ export class UserController {
   @Get()
   async findAll(@Query() query) {
     const tab = query[Filter.TAB];
-    const time = query[Filter.TIME];
 
-    return this.userService.findAll(tab, time);
+    return this.userService.findAll(tab);
   }
 
   @Post()

@@ -31,7 +31,7 @@ export class CommentController {
       if (!isCommentExist) {
         throw new HttpException(
           'Your comment you reply is not exist!',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.NOT_FOUND,
         );
       }
     }
@@ -55,7 +55,14 @@ export class CommentController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return this.commentService.findById(+id);
+    const isExistComment = await this.commentService.findById(+id);
+
+    if (!isExistComment) {
+      throw new HttpException(
+        'Your comment is not exist!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   @UseGuards(JwtAuthGuard)

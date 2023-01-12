@@ -26,16 +26,23 @@ export class TagService {
     return Tag.destroy({ where: { id } });
   }
 
-  async getOrCreateTag(tagName: string) {
-    const isTagExist = await this.findByName(tagName);
+  async getOrCreateTagList(tags: string) {
+    const tagNames = tags.split(', ');
+    console.log(tagNames);
+    
+    const tagList: Tag[] = [];
+    for (const tagName of tagNames) {
+      const isTagExist = await this.findByName(tagName);
 
-    if (!isTagExist) {
-      const tagCreate: CreateTagDto = new CreateTagDto();
-      tagCreate.name = tagName;
-      const tag = await this.create(tagCreate);
-      return tag;
+      if (!isTagExist) {
+        const tagCreate: CreateTagDto = new CreateTagDto();
+        tagCreate.name = tagName;
+        const tag = await this.create(tagCreate);
+        tagList.push(tag);
+      }
     }
+    
 
-    return isTagExist;
+    return tagList;
   }
 }

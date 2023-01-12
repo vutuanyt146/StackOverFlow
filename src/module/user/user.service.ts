@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { User } from '../../model/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { TabFilter, TimeFilter } from './user.controller';
+import { TabFilter } from './user.controller';
 import { Vote } from 'src/model/vote.entity';
 import { Comment } from 'src/model/comment.entity';
 import { Question } from 'src/model/question.entity';
@@ -14,17 +14,13 @@ const DUPLICATED = 23505;
 export class UserService {
   constructor(private voteService: VoteService) {}
 
-  async findAll(tab, time) {
+  async findAll(tab) {
     const users = await User.findAll({
       include: [Comment, Vote, Question],
     });
 
     if (!tab) {
       tab = TabFilter.REPUTATION;
-    }
-
-    if (!time) {
-      time = TimeFilter.WEEK;
     }
 
     const result = await this.sortByTabFilter(users, tab);

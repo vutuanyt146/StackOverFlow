@@ -5,11 +5,13 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
 import { Base } from './base.entity';
 import { Comment } from './comment.entity';
+import { QuestionTag } from './questionTag.entity';
 
 @Table
 export class Question extends Base {
@@ -26,15 +28,11 @@ export class Question extends Base {
   @Column({ field: 'user_id' })
   userId: number;
 
-  @ForeignKey(() => Tag)
-  @Column({ field: 'tag_id' })
-  tagId: number;
-
   @BelongsTo(() => User)
   user: User;
 
-  @BelongsTo(() => Tag)
-  tag: Tag;
+  @BelongsToMany(() => Tag, () => QuestionTag)
+  tags: Tag[];
 
   @HasMany(() => Comment)
   comments: Comment[];
