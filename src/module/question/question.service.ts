@@ -17,7 +17,7 @@ export class QuestionService {
   }
 
   async findAll() {
-    return Question.findAll({ include: [Tag] });
+    return Question.findAll({ include: [Tag], order: [['createdAt', 'DESC']] });
   }
 
   async findById(id: number) {

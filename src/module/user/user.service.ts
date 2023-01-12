@@ -185,10 +185,12 @@ export class UserService {
     }
   }
 
-  async sortByReputation(users) {
+  async sortByReputation(users: User[]) {
     const result: any = [];
+
     for (const user of users) {
-      const reputation = user.comments?.length * 10 + user.votes?.length * 10;
+      const reputation = user.questions?.length * 10;
+
       result.push({
         user,
         reputation,
@@ -200,6 +202,7 @@ export class UserService {
 
   async sortByNewUser(users: User[]) {
     const result: any = [];
+
     for (const user of users) {
       const now = new Date().getTime() / 1000;
       const date = new Date(user.createdAt);

@@ -32,8 +32,8 @@ export enum TabFilter {
 }
 
 export enum Filter {
-  // TIME = 'TimeFilter',
-  TAB = 'TabFilter',
+  // TIME = 'time',
+  TAB = 'tab',
 }
 
 @Controller('user')
