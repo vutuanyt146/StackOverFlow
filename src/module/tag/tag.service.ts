@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Question } from 'src/model/question.entity';
 import { Tag } from 'src/model/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 
@@ -11,7 +12,19 @@ export class TagService {
   }
 
   async findAll() {
-    return Tag.findAll();
+    const tags = await Tag.findAll({ include: [Question] });
+    const result: any = [];
+
+    for (const tag of tags) {
+      const numberOfQuestion = tag.questions.length;
+
+      result.push({
+        number: numberOfQuestion,
+        name: tag.name,
+      });
+    }
+
+    return result.sort((a, b) => b.number - a.number);
   }
 
   async findById(id: number) {
