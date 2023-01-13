@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Question } from 'src/model/question.entity';
 import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
+import { Comment } from 'src/model/comment.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
@@ -41,13 +42,37 @@ export class QuestionService {
         },
       ],
     });
+    const question = user.questions.find((item) => item.id == id);
 
+    question.comments.map(async (item) => {
+      const result = await this.getCommentAuthor(item);
+      return result;
+    });
+
+    const a = await Promise.all(
+      question.comments.map((item) => {
+        const result = this.getCommentAuthor(item);
+        return result;
+      }),
+    );
+    const data = question.dataValues;
+    data['comments'] = a;
     const reputation = user.questions?.length * 10;
 
     return {
-      user,
+      data,
       reputation,
     };
+  }
+
+  async getCommentAuthor(comment: Comment) {
+    const user = await User.findOne({
+      where: { id: comment.userId },
+      attributes: ['name'],
+    });
+    const result = { ...comment.dataValues };
+    result['author'] = user.name;
+    return result;
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {
