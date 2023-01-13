@@ -68,10 +68,11 @@ export class QuestionService {
   async getCommentAuthor(comment: Comment) {
     const user = await User.findOne({
       where: { id: comment.userId },
-      attributes: ['name'],
+      attributes: ['username'],
     });
     const result = { ...comment.dataValues };
-    result['author'] = user.name;
+    result['author'] = user.username;
+
     return result;
   }
 
