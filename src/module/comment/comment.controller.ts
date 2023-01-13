@@ -70,6 +70,15 @@ export class CommentController {
 
   @Get('/commentId/:commentId')
   async getByCommentId(@Param('commentId') commentId: number) {
+    const isExistComment = await this.commentService.findById(commentId);
+
+    if (!isExistComment && commentId != 0) {
+      throw new HttpException(
+        'Your comment is not exist!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return this.commentService.getByCommentId(commentId);
   }
 
