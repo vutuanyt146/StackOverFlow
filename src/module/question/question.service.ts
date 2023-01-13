@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { throwError } from 'rxjs';
 import { Question } from 'src/model/question.entity';
 import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
@@ -25,8 +26,15 @@ export class QuestionService {
       where: { id },
     });
 
+    if (!question) {
+      throw new HttpException(
+        'This question is not exist!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const user = await User.findOne({
-      where: { id: question.userId },
+      where: { id: question?.userId },
       include: [
         {
           model: Question,

@@ -12,17 +12,32 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
+import { QuestionService } from '../question/question.service';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Controller('comment')
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(
+    private readonly commentService: CommentService,
+    private readonly questionService: QuestionService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
+    const isExistQuestion = await this.questionService.findById(
+      createCommentDto.questionId,
+    );
+
+    if (!isExistQuestion) {
+      throw new HttpException(
+        'This question is not exist!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     if (createCommentDto.commentId) {
       const isCommentExist = await this.commentService.findById(
         createCommentDto.commentId,
@@ -53,6 +68,11 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
+  @Get('/commentId/:commentId')
+  async getByCommentId(@Param('commentId') commentId: number) {
+    return this.commentService.getByCommentId(commentId);
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     const isExistComment = await this.commentService.findById(+id);
@@ -63,6 +83,11 @@ export class CommentController {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    return {
+      status: 200,
+      comment: isExistComment,
+    };
   }
 
   @UseGuards(JwtAuthGuard)

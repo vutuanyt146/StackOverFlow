@@ -21,6 +21,10 @@ export class CommentService {
     return Comment.findAll({ include: [User] });
   }
 
+  async getByCommentId(commentId: number) {
+    return Comment.findAll({ where: { commentId } });
+  }
+
   async findById(id: number) {
     return Comment.findOne({ where: { id }, include: [User] });
   }
