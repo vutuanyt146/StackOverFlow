@@ -7,7 +7,6 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   textContent: string;
 
-  @IsNotEmpty()
   codeContent: string;
 
   @IsOptional()

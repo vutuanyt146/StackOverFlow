@@ -38,7 +38,7 @@ export class QuestionController {
     );
 
     for (const tag of tagList) {
-      QuestionTag.create({
+      await QuestionTag.create({
         tagId: tag.id,
         questionId: question.id,
       });

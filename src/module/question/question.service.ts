@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { throwError } from 'rxjs';
 import { Question } from 'src/model/question.entity';
 import { Tag } from 'src/model/tag.entity';
 import { User } from 'src/model/user.entity';
