@@ -38,6 +38,7 @@ export class QuestionService {
         {
           model: Question,
           attributes: ['id'],
+          include: ['comments'],
         },
       ],
     });
