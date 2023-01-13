@@ -43,10 +43,12 @@ export class QuestionService {
       ],
     });
 
+    const comment = user.questions.filter((item) => item.id == id);
     const reputation = user.questions?.length * 10;
 
     return {
       question,
+      comment,
       user,
       reputation,
     };
