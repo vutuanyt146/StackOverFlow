@@ -21,11 +21,11 @@ export class QuestionService {
   }
 
   async findById(id: number) {
-    const question = await Question.findOne({
+    const isExistQuestion = await Question.findOne({
       where: { id },
     });
 
-    if (!question) {
+    if (!isExistQuestion) {
       throw new HttpException(
         'This question is not exist!',
         HttpStatus.NOT_FOUND,
@@ -33,22 +33,18 @@ export class QuestionService {
     }
 
     const user = await User.findOne({
-      where: { id: question?.userId },
+      where: { id: isExistQuestion?.userId },
       include: [
         {
           model: Question,
-          attributes: ['id'],
           include: ['comments'],
         },
       ],
     });
 
-    const comment = user.questions.filter((item) => item.id == id);
     const reputation = user.questions?.length * 10;
 
     return {
-      question,
-      comment,
       user,
       reputation,
     };
