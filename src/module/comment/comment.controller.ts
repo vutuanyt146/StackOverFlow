@@ -69,7 +69,7 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
-  @Get('/:commentId/comment')
+  @Get('/:commentId/commentId')
   async getByCommentId(@Param('commentId') commentId: number) {
     const isExistComment = await this.commentService.findById(commentId);
 
