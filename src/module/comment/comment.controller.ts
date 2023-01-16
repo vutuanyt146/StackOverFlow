@@ -29,6 +29,7 @@ export class CommentController {
   async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
     const isExistQuestion = await this.questionService.findById(
       createCommentDto.questionId,
+      req.user.id,
     );
 
     if (!isExistQuestion) {

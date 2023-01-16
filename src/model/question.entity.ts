@@ -12,7 +12,6 @@ import { User } from 'src/model/user.entity';
 import { Base } from './base.entity';
 import { Comment } from './comment.entity';
 import { QuestionTag } from './questionTag.entity';
-import { View } from './view.entity';
 
 @Table
 export class Question extends Base {
@@ -21,9 +20,6 @@ export class Question extends Base {
 
   @Column({ field: 'text_content', type: TEXT })
   textContent: string;
-
-  @Column({ field: 'code_content', type: TEXT })
-  codeContent: string;
 
   @ForeignKey(() => User)
   @Column({ field: 'user_id' })
@@ -37,9 +33,6 @@ export class Question extends Base {
 
   @BelongsToMany(() => Tag, () => QuestionTag)
   tags: Tag[];
-
-  @BelongsToMany(() => User, () => View)
-  userViews: User[];
 
   @HasMany(() => Comment)
   comments: Comment[];

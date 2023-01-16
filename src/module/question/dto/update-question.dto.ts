@@ -10,8 +10,5 @@ export class UpdateQuestionDto extends PartialType(CreateQuestionDto) {
   textContent?: string;
 
   @IsOptional()
-  codeContent?: string;
-
-  @IsOptional()
   tagName: string;
 }

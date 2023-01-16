@@ -57,8 +57,8 @@ export class QuestionController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    return this.questionService.findById(+id);
+  async findById(@Param('id') id: string, @Req() req) {
+    return this.questionService.findById(+id, req.user?.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -78,7 +78,10 @@ export class QuestionController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    const isExistQuestion = await this.questionService.findById(+id);
+    const isExistQuestion = await this.questionService.findById(
+      +id,
+      req.user.id,
+    );
 
     if (!isExistQuestion) {
       throw new HttpException(

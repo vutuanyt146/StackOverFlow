@@ -1,25 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { View } from 'src/model/view.entity';
 import { CreateViewDto } from './dto/create-view.dto';
 
 @Injectable()
 export class ViewService {
-  create(createViewDto: CreateViewDto) {
-    return 'This action adds a new view';
+  async create(userId: number, createViewDto: CreateViewDto) {
+    return View.create({
+      userId,
+      questionId: createViewDto.questionId,
+    });
   }
 
-  findAll() {
-    return `This action returns all view`;
+  async findAll() {
+    return View.findAll();
   }
 
-  findOne(id: number) {
+  async findById(id: number) {
     return `This action returns a #${id} view`;
   }
 
-  update(id: number) {
-    return `This action updates a #${id} view`;
+  async update(id: number) {
+    const now = Date.now();
+    return View.update(
+      {
+        updateAt: now,
+      },
+      {
+        where: { id },
+      },
+    );
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} view`;
   }
 }
