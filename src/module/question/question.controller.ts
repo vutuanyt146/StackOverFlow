@@ -17,6 +17,7 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { TagService } from '../tag/tag.service';
 import { QuestionTag } from 'src/model/questionTag.entity';
+import { Question } from 'src/model/question.entity';
 
 @Controller('question')
 export class QuestionController {
@@ -57,8 +58,8 @@ export class QuestionController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string, @Body() body) {
-    return this.questionService.findById(+id, body.userId);
+  async getById(@Param('id') id: string, @Body() body) {
+    return this.questionService.getById(+id, body.userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -67,6 +68,15 @@ export class QuestionController {
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
+    const isExistQuestion = await Question.findByPk(id);
+
+    if (!isExistQuestion) {
+      throw new HttpException(
+        'This question is not exist!',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     await this.questionService.update(+id, updateQuestionDto);
 
     return {
@@ -78,7 +88,7 @@ export class QuestionController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    const isExistQuestion = await this.questionService.findById(
+    const isExistQuestion = await this.questionService.getById(
       +id,
       req.user.id,
     );

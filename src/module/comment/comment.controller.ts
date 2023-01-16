@@ -11,6 +11,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { Question } from 'src/model/question.entity';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { QuestionService } from '../question/question.service';
 import { CommentService } from './comment.service';
@@ -27,9 +28,8 @@ export class CommentController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
-    const isExistQuestion = await this.questionService.findById(
+    const isExistQuestion = await Question.findByPk(
       createCommentDto.questionId,
-      req.user.id,
     );
 
     if (!isExistQuestion) {

@@ -32,7 +32,7 @@ export class QuestionService {
     });
   }
 
-  async findById(id: number, userId) {
+  async getById(id: number, userId) {
     const isExistQuestion = await Question.findOne({
       where: { id },
     });
