@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Question } from 'src/model/question.entity';
 import { Vote, VoteType } from 'src/model/vote.entity';
 import { CreateVoteDto } from './dto/create-vote.dto';
-import { UpdateVoteDto } from './dto/update-vote.dto';
 
 @Injectable()
 export class VoteService {
@@ -53,10 +52,10 @@ export class VoteService {
     });
   }
 
-  async update(id: number, updateVoteDto: UpdateVoteDto) {
+  async update(id: number, voteType: VoteType) {
     return Vote.update(
       {
-        voteType: updateVoteDto.voteType,
+        voteType: voteType,
       },
       {
         where: { id },

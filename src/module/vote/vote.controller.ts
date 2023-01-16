@@ -32,10 +32,17 @@ export class VoteController {
 
     if (isVoteExist) {
       if (createVoteDto.voteType != isVoteExist.voteType) {
-        return await this.voteService.update(isVoteExist.id, createVoteDto);
+        return await this.voteService.update(
+          isVoteExist.id,
+          createVoteDto.voteType,
+        );
       }
 
-      return await this.voteService.remove(isVoteExist.id);
+      createVoteDto.voteType = null;
+      return await this.voteService.update(
+        isVoteExist.id,
+        createVoteDto.voteType,
+      );
     }
 
     return this.voteService.create(createVoteDto, req.user);
@@ -69,7 +76,7 @@ export class VoteController {
 
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateVoteDto: UpdateVoteDto) {
-    await this.voteService.update(id, updateVoteDto);
+    await this.voteService.update(id, updateVoteDto.voteType);
 
     return {
       message: 'Update vote successful',
