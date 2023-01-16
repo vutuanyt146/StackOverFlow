@@ -121,11 +121,14 @@ console.log('here');
     return Question.destroy({ where: { id } });
   }
 
-  async increaseView() {
+  async increaseView(id: number, views: number) {
     await Question.update(
       {
-        views: 
-      }
-    )
+        views: views + 1,
+      },
+      {
+        where: { id },
+      },
+    );
   }
 }
