@@ -20,10 +20,9 @@ export class ViewService {
   }
 
   async update(id: number) {
-    const now = Date.now();
     return View.update(
       {
-        updateAt: now,
+        id,
       },
       {
         where: { id },

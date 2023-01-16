@@ -50,14 +50,15 @@ console.log('here');
 
       if (!isExistView) {
         const viewDto: CreateViewDto = new CreateViewDto();
-        console.log('viewDto: ', viewDto, id);
         viewDto.questionId = id;
-        console.log('viewDto: ', viewDto, id);
-        
+
         await this.viewService.create(userId, viewDto);
+        this.increaseView(isExistQuestion.id, isExistQuestion.views);
       } else {
+        console.log(Date.now() - isExistView.updatedAt);
         if (Date.now() - isExistView.updatedAt >= TIME_RESET_VIEW) {
           await this.viewService.update(isExistView.id);
+          this.increaseView(isExistQuestion.id, isExistQuestion.views);
         }
       }
     }
