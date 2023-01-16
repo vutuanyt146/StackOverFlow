@@ -5,14 +5,19 @@ import { User } from 'src/model/user.entity';
 import { Comment } from 'src/model/comment.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { ViewService } from '../view/view.service';
+import { CreateViewDto } from '../view/dto/create-view.dto';
+import { View } from 'src/model/view.entity';
+import { TIME_RESET_VIEW } from 'src/shared/constant/constant';
 
 @Injectable()
 export class QuestionService {
+  constructor(private viewService: ViewService) {}
+
   async create(user, createQuestionDto: CreateQuestionDto) {
     return Question.create({
       title: createQuestionDto.title,
       textContent: createQuestionDto.textContent,
-      codeContent: createQuestionDto.codeContent,
       userId: user.id,
     });
   }
@@ -21,7 +26,8 @@ export class QuestionService {
     return Question.findAll({ include: [Tag], order: [['createdAt', 'DESC']] });
   }
 
-  async findById(id: number) {
+  async findById(id: number, userId) {
+    userId = 1;
     const isExistQuestion = await Question.findOne({
       where: { id },
     });
@@ -31,6 +37,29 @@ export class QuestionService {
         'This question is not exist!',
         HttpStatus.NOT_FOUND,
       );
+    }
+
+    if (userId) {
+      const isExistView = await View.findOne({
+        where: {
+          userId,
+          questionId: id,
+        },
+      });
+console.log('here');
+
+      if (!isExistView) {
+        const viewDto: CreateViewDto = new CreateViewDto();
+        console.log('viewDto: ', viewDto, id);
+        viewDto.questionId = id;
+        console.log('viewDto: ', viewDto, id);
+        
+        await this.viewService.create(userId, viewDto);
+      } else {
+        if (Date.now() - isExistView.updatedAt >= TIME_RESET_VIEW) {
+          await this.viewService.update(isExistView.id);
+        }
+      }
     }
 
     const user = await User.findOne({
@@ -81,7 +110,6 @@ export class QuestionService {
       {
         title: updateQuestionDto.title,
         textContent: updateQuestionDto.textContent,
-        codeContent: updateQuestionDto.codeContent,
       },
       {
         where: { id },
@@ -91,5 +119,13 @@ export class QuestionService {
 
   async remove(id: number) {
     return Question.destroy({ where: { id } });
+  }
+
+  async increaseView() {
+    await Question.update(
+      {
+        views: 
+      }
+    )
   }
 }
