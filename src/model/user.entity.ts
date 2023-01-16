@@ -1,9 +1,10 @@
-import { Column, HasMany, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, HasMany, Table } from 'sequelize-typescript';
 import { Question } from 'src/model/question.entity';
 import { Comment } from 'src/model/comment.entity';
 import { Vote } from './vote.entity';
 import { Base } from './base.entity';
 import { Exclude } from 'class-transformer';
+import { View } from './view.entity';
 
 @Table
 export class User extends Base {
@@ -39,6 +40,9 @@ export class User extends Base {
   @Column
   location: string;
 
+  @Column
+  avatar: string;
+
   @Column({
     defaultValue: false,
     field: 'is_enabled_2fa',
@@ -53,4 +57,7 @@ export class User extends Base {
 
   @HasMany(() => Vote)
   votes: Vote[];
+
+  @BelongsToMany(() => Question, () => View)
+  questionViews: Question[];
 }

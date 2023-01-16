@@ -115,7 +115,22 @@ export class CommentController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Req() req) {
+    const isExistComment = await this.commentService.findById(+id);
+
+    if (!isExistComment) {
+      throw new HttpException(
+        `The comment with id ${id} is not exist!`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (req.user.id != isExistComment.userId) {
+      throw new HttpException(
+        'This comment is not belong to you!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     await this.commentService.remove(+id);
 
     return {

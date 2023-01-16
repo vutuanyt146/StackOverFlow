@@ -9,8 +9,8 @@ import { UserModule } from './module/user/user.module';
 import { CommentModule } from './module/comment/comment.module';
 import { AuthModule } from './module/auth/auth.module';
 import { MailModule } from 'src/shared/mail/mail.module';
-import { MailService } from 'src/shared/mail/mail.service';
 import { QuestionModule } from './module/question/question.module';
+import { ViewModule } from './module/view/view.module';
 
 @Module({
   imports: [
@@ -23,8 +23,9 @@ import { QuestionModule } from './module/question/question.module';
     AuthModule,
     MailModule,
     QuestionModule,
+    ViewModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MailService],
+  providers: [AppService],
 })
 export class AppModule {}

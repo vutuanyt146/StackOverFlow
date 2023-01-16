@@ -12,6 +12,7 @@ import { User } from 'src/model/user.entity';
 import { Base } from './base.entity';
 import { Comment } from './comment.entity';
 import { QuestionTag } from './questionTag.entity';
+import { View } from './view.entity';
 
 @Table
 export class Question extends Base {
@@ -28,11 +29,17 @@ export class Question extends Base {
   @Column({ field: 'user_id' })
   userId: number;
 
+  @Column({ defaultValue: 0 })
+  views: number;
+
   @BelongsTo(() => User)
   user: User;
 
   @BelongsToMany(() => Tag, () => QuestionTag)
   tags: Tag[];
+
+  @BelongsToMany(() => User, () => View)
+  userViews: User[];
 
   @HasMany(() => Comment)
   comments: Comment[];

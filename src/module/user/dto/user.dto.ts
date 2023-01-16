@@ -16,4 +16,6 @@ export class UserDto {
   interestedTags: string;
 
   location: string;
+
+  avatar: string;
 }
