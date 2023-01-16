@@ -52,13 +52,13 @@ export class QuestionController {
   }
 
   @Get()
-  async findAll() {
-    return this.questionService.findAll();
+  async findAll(@Body() body) {
+    return this.questionService.findAll(body.pageSize, body.pageNumber);
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string, @Req() req) {
-    return this.questionService.findById(+id, req.user?.id);
+  async findById(@Param('id') id: string, @Body() body) {
+    return this.questionService.findById(+id, body.userId);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -42,7 +42,7 @@ export class TagService {
   async getOrCreateTagList(tags: string) {
     const tagNames = tags.split(', ');
     const tagList: Tag[] = [];
-    console.log('tag: ', tagNames);
+
     for (const tagName of tagNames) {
       const isTagExist = await this.findByName(tagName);
       let tag: Tag = isTagExist;

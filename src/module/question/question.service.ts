@@ -22,12 +22,17 @@ export class QuestionService {
     });
   }
 
-  async findAll() {
-    return Question.findAll({ include: [Tag], order: [['createdAt', 'DESC']] });
+  async findAll(pageSize: number, pageNumber: number) {
+    return Question.findAll({
+      include: [Tag],
+      order: [['createdAt', 'DESC']],
+      offset: (pageNumber - 1) * pageSize,
+      limit: pageSize,
+      subQuery: false,
+    });
   }
 
   async findById(id: number, userId) {
-    userId = 1;
     const isExistQuestion = await Question.findOne({
       where: { id },
     });
@@ -46,7 +51,6 @@ export class QuestionService {
           questionId: id,
         },
       });
-console.log('here');
 
       if (!isExistView) {
         const viewDto: CreateViewDto = new CreateViewDto();
@@ -55,7 +59,6 @@ console.log('here');
         await this.viewService.create(userId, viewDto);
         this.increaseView(isExistQuestion.id, isExistQuestion.views);
       } else {
-        console.log(Date.now() - isExistView.updatedAt);
         if (Date.now() - isExistView.updatedAt >= TIME_RESET_VIEW) {
           await this.viewService.update(isExistView.id);
           this.increaseView(isExistQuestion.id, isExistQuestion.views);

@@ -32,17 +32,21 @@ export class VoteController {
 
     if (isVoteExist) {
       if (createVoteDto.voteType != isVoteExist.voteType) {
-        return await this.voteService.update(
-          isVoteExist.id,
-          createVoteDto.voteType,
-        );
+        await this.voteService.update(isVoteExist.id, createVoteDto.voteType);
+
+        return {
+          message: 'Update vote success!',
+          status: 200,
+        };
       }
 
       createVoteDto.voteType = null;
-      return await this.voteService.update(
-        isVoteExist.id,
-        createVoteDto.voteType,
-      );
+
+      await this.voteService.update(isVoteExist.id, createVoteDto.voteType);
+      return {
+        message: 'Update vote success!',
+        status: 200,
+      };
     }
 
     return this.voteService.create(createVoteDto, req.user);
@@ -53,7 +57,7 @@ export class VoteController {
     return this.voteService.findAll();
   }
 
-  @Get('/question/:questionId')
+  @Get('/:questionId/question')
   async findVoteByQuestionId(@Param('questionId') questionId: number) {
     return this.voteService.findVoteByQuestionId(questionId);
   }
@@ -65,7 +69,6 @@ export class VoteController {
 
     return {
       statusVote: vote.voteType,
-      status: 200,
     };
   }
 
