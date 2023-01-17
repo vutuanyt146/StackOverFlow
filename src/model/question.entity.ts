@@ -12,6 +12,7 @@ import { User } from 'src/model/user.entity';
 import { Base } from './base.entity';
 import { Comment } from './comment.entity';
 import { QuestionTag } from './questionTag.entity';
+import { Vote } from './vote.entity';
 
 @Table
 export class Question extends Base {
@@ -36,4 +37,7 @@ export class Question extends Base {
 
   @HasMany(() => Comment)
   comments: Comment[];
+
+  @HasMany(() => Vote)
+  votes: Vote[];
 }

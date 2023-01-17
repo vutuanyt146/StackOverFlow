@@ -9,6 +9,7 @@ import { ViewService } from '../view/view.service';
 import { CreateViewDto } from '../view/dto/create-view.dto';
 import { View } from 'src/model/view.entity';
 import { TIME_RESET_VIEW } from 'src/shared/constant/constant';
+import { Vote } from 'src/model/vote.entity';
 
 @Injectable()
 export class QuestionService {
@@ -25,13 +26,13 @@ export class QuestionService {
   async findAll(pageSize: number, pageNumber: number) {
     if (!pageSize || !pageNumber) {
       return Question.findAll({
-        include: [Tag],
+        include: [Tag, Vote, Comment],
         order: [['createdAt', 'DESC']],
       });
     }
 
     return Question.findAll({
-      include: [Tag],
+      include: [Tag, Vote, Comment],
       order: [['createdAt', 'DESC']],
       offset: (pageNumber - 1) * pageSize,
       limit: pageSize,
