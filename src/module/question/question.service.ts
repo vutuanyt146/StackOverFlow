@@ -23,6 +23,13 @@ export class QuestionService {
   }
 
   async findAll(pageSize: number, pageNumber: number) {
+    if (!pageSize || !pageNumber) {
+      return Question.findAll({
+        include: [Tag],
+        order: [['createdAt', 'DESC']],
+      });
+    }
+
     return Question.findAll({
       include: [Tag],
       order: [['createdAt', 'DESC']],
@@ -82,14 +89,14 @@ export class QuestionService {
       return result;
     });
 
-    const a = await Promise.all(
+    const comments = await Promise.all(
       question.comments.map((item) => {
         const result = this.getCommentAuthor(item);
         return result;
       }),
     );
     const data = question.dataValues;
-    data['comments'] = a;
+    data['comments'] = comments;
     const reputation = user.questions?.length * 10;
 
     return {

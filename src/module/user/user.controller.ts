@@ -40,6 +40,7 @@ export enum Filter {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() userDto: UserDto) {
     const user = await this.userService.create(userDto);

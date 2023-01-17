@@ -16,11 +16,11 @@ import { UpdateVoteDto } from './dto/update-vote.dto';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
 import { Vote } from 'src/model/vote.entity';
 
-@UseGuards(JwtAuthGuard)
 @Controller('vote')
 export class VoteController {
   constructor(private readonly voteService: VoteService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createVoteDto: CreateVoteDto, @Req() req) {
     const isVoteExist = await Vote.findOne({
@@ -62,6 +62,7 @@ export class VoteController {
     return this.voteService.findVoteByQuestionId(questionId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('status')
   async getVoteStatus(@Query() query, @Req() req) {
     const questionId = query['questionId'];
@@ -87,6 +88,7 @@ export class VoteController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.voteService.remove(+id);
