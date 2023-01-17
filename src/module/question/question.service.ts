@@ -26,13 +26,13 @@ export class QuestionService {
   async findAll(pageSize: number, pageNumber: number) {
     if (!pageSize || !pageNumber) {
       return Question.findAll({
-        include: [Tag, Vote, Comment],
+        include: [Tag, Vote, Comment, User],
         order: [['createdAt', 'DESC']],
       });
     }
 
     return Question.findAll({
-      include: [Tag, Vote, Comment],
+      include: [Tag, Vote, Comment, User],
       order: [['createdAt', 'DESC']],
       offset: (pageNumber - 1) * pageSize,
       limit: pageSize,
