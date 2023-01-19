@@ -85,17 +85,14 @@ export class QuestionService {
     });
     const question = user.questions.find((item) => item.id == id);
 
-    question.comments.map(async (item) => {
-      const result = await this.getCommentAuthor(item);
-      return result;
-    });
-
-    const comments = await Promise.all(
+    let comments = await Promise.all(
       question.comments.map((item) => {
         const result = this.getCommentAuthor(item);
         return result;
       }),
     );
+    comments = comments.filter((item) => item.commentId === 0);
+
     const data = question.dataValues;
     data['comments'] = comments;
     const reputation = user.questions?.length * 10;
