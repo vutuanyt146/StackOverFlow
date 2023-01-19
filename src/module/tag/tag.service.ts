@@ -28,11 +28,11 @@ export class TagService {
   }
 
   async findById(id: number) {
-    return Tag.findOne({ where: { id } });
+    return Tag.findOne({ where: { id }, include: [Question] });
   }
 
   async findByName(name: string) {
-    return Tag.findOne({ where: { name } });
+    return Tag.findOne({ where: { name }, include: [Question] });
   }
 
   async remove(id: number) {
