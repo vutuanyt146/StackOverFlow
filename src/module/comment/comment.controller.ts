@@ -69,18 +69,18 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
-  @Get('/:commentId/commentId')
-  async getByCommentId(@Param('commentId') commentId: number) {
-    const isExistComment = await this.commentService.findById(commentId);
+  @Get('/commentId')
+  async getByCommentId(@Body() body) {
+    const isExistComment = await this.commentService.findById(body.commentId);
 
-    if (!isExistComment && commentId != 0) {
+    if (!isExistComment && body.commentId != 0) {
       throw new HttpException(
         'Your comment is not exist!',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    return this.commentService.getByCommentId(commentId);
+    return this.commentService.getByCommentId(body.commentId, body.questionId);
   }
 
   @Get(':id')
