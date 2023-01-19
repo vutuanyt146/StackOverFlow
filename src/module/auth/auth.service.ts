@@ -49,11 +49,12 @@ export class AuthService {
       },
     });
 
-    if (user) {
-      throw new HttpException(
-        `Your username or email is used!`,
-        HttpStatus.CONFLICT,
-      );
+    if (user.username == body.username) {
+      throw new HttpException(`Your username is used!`, HttpStatus.CONFLICT);
+    }
+
+    if (user.email == body.email) {
+      throw new HttpException(`Your email is used!`, HttpStatus.CONFLICT);
     }
 
     const userCreate = await User.create({

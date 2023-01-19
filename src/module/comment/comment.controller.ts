@@ -10,7 +10,6 @@ import {
   Req,
   HttpException,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { Question } from 'src/model/question.entity';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
