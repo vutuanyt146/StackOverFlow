@@ -26,6 +26,11 @@ export class TagController {
     return this.tagService.findAll();
   }
 
+  @Get('/tagname/:tagName')
+  async getQuestionByTagName(@Param('tagName') tagName) {
+    return this.tagService.findByName(tagName);
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.tagService.findById(+id);
