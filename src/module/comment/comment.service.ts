@@ -22,7 +22,7 @@ export class CommentService {
   }
 
   async getByCommentId(commentId: number) {
-    return Comment.findAll({ where: { commentId } });
+    return Comment.findAll({ where: { commentId }, include: [User] });
   }
 
   async findById(id: number) {
