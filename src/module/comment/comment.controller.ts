@@ -10,6 +10,7 @@ import {
   Req,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { Question } from 'src/model/question.entity';
 import { JwtAuthGuard } from 'src/shared/passport/jwt-auth.guard';
@@ -69,18 +70,19 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
-  @Get('/commentId')
-  async getByCommentId(@Body() body) {
-    const isExistComment = await this.commentService.findById(body.commentId);
+  @Get('/:commentId/commentId')
+  async getByCommentId(@Param('commentId') commentId) {
+    const isExistComment = await this.commentService.findById(commentId);
 
-    if (!isExistComment && body.commentId != 0) {
+    if (!isExistComment && commentId != 0) {
       throw new HttpException(
         'Your comment is not exist!',
         HttpStatus.NOT_FOUND,
       );
     }
+    const questionId = isExistComment.questionId;
 
-    return this.commentService.getByCommentId(body.commentId, body.questionId);
+    return this.commentService.getByCommentId(commentId, questionId);
   }
 
   @Get(':id')
